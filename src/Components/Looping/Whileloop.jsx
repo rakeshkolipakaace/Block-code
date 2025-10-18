@@ -40,9 +40,6 @@ const WhileLoopBlock = ({ data, selected, id }) => {
           backgroundColor: "#ef4444",
           color: "white",
           border: "none",
-          borderRadius: "50%",
-          width: 20,
-          height: 20,
           cursor: "pointer",
           lineHeight: 0,
         }}
