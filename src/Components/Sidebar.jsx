@@ -56,7 +56,6 @@ const Sidebar = ({ onAddBlock }) => {
         "PWM LED",
         "RGB LED",
         "Relay",
-        "16*2 LCD",
         "Push Button",
       ],
     },
