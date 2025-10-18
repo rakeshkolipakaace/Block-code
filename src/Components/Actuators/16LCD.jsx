@@ -1,5 +1,6 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import PinSelect from "../common/PinSelect";
 
 const LCD16x2Block = ({ data, selected, id }) => {
   const handleChange = (key, value) =>
@@ -41,17 +42,19 @@ const LCD16x2Block = ({ data, selected, id }) => {
       </h3>
 
       <label>SDA Pin</label>
-      <input
-        type="number"
+      <PinSelect
         value={data.sda || ""}
-        onChange={(e) => handleChange("sda", e.target.value)}
+        onChange={(val) => handleChange("sda", val)}
+        availablePins={data.availablePins}
+        pwmPins={data.pwmPins}
       />
 
       <label>SCL Pin</label>
-      <input
-        type="number"
+      <PinSelect
         value={data.scl || ""}
-        onChange={(e) => handleChange("scl", e.target.value)}
+        onChange={(val) => handleChange("scl", val)}
+        availablePins={data.availablePins}
+        pwmPins={data.pwmPins}
       />
 
       <label>Backlight (High/Low)</label>
