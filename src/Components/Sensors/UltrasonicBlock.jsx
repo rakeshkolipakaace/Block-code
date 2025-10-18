@@ -1,5 +1,6 @@
 import React from 'react';
 import { Handle, Position } from '@xyflow/react';
+import PinSelect from "../common/PinSelect";
 
 const UltrasonicSensorNode = ({ data, selected, id }) => {
   const handleDataChange = (key, value) => {
@@ -90,31 +91,21 @@ const UltrasonicSensorNode = ({ data, selected, id }) => {
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           <label style={{ fontSize: '12px', color: '#6b7280' }}>Trigger Pin</label>
-          <input
-            type="number"
+          <PinSelect
             value={data.triggerPin || ''}
-            onChange={(e) => handleDataChange('triggerPin', e.target.value)}
-            placeholder="Enter trigger pin"
-            style={{
-              border: '1px solid #d1d5db',
-              borderRadius: '4px',
-              padding: '4px 8px',
-              fontSize: '14px'
-            }}
+            onChange={(val) => handleDataChange('triggerPin', val)}
+            availablePins={data.availablePins}
+            pwmPins={data.pwmPins}
+            selectStyle={{ width: '100%' }}
           />
 
           <label style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>Echo Pin</label>
-          <input
-            type="number"
+          <PinSelect
             value={data.echoPin || ''}
-            onChange={(e) => handleDataChange('echoPin', e.target.value)}
-            placeholder="Enter echo pin"
-            style={{
-              border: '1px solid #d1d5db',
-              borderRadius: '4px',
-              padding: '4px 8px',
-              fontSize: '14px'
-            }}
+            onChange={(val) => handleDataChange('echoPin', val)}
+            availablePins={data.availablePins}
+            pwmPins={data.pwmPins}
+            selectStyle={{ width: '100%' }}
           />
         </div>
       </div>
