@@ -21,7 +21,6 @@ import BuzzerBlock from "./Actuators/Buzzer";
 import PWMLEDBlock from "./Actuators/pwm";
 import RGBLEDBlock from "./Actuators/RGB";
 import RelayBlock from "./Actuators/Relay";
-import LCD16x2Block from "./Actuators/16LCD";
 import ServoMotorBlock from "./Motors/Servomotor";
 import PushButtonNode from "./Actuators/pushbutton";
 // Import looping nodes
@@ -126,7 +125,6 @@ const nodeTypes = {
   pwmLed: PWMLEDBlock,
   rgbLed: RGBLEDBlock,
   relay: RelayBlock,
-  lcd: LCD16x2Block,
   servoMotor: ServoMotorBlock,
   pushButton: PushButtonNode,
   // looping
@@ -337,7 +335,6 @@ const FlowComponent = ({
       fitView
       minZoom={0.1}
       maxZoom={4}
-      defaultZoom={1}
       zoomOnScroll
       zoomOnPinch
       selectNodesOnDrag={false}
