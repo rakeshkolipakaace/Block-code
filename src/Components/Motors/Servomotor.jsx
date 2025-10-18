@@ -1,5 +1,6 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import PinSelect from "../common/PinSelect";
 
 const ServoMotorBlock = ({ data, selected, id }) => {
   const handleDataChange = (key, value) => {
@@ -89,17 +90,12 @@ const ServoMotorBlock = ({ data, selected, id }) => {
           <label style={{ fontSize: "12px", color: "#6b7280" }}>
             Servo Pin
           </label>
-          <input
-            type="text"
+          <PinSelect
             value={data.servoPin || ""}
-            onChange={(e) => handleDataChange("servoPin", e.target.value)}
-            placeholder="Enter pin (e.g. D9)"
-            style={{
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              padding: "4px 8px",
-              fontSize: "14px",
-            }}
+            onChange={(val) => handleDataChange("servoPin", val)}
+            availablePins={data.availablePins}
+            pwmPins={data.pwmPins}
+            selectStyle={{ width: "100%" }}
           />
         </div>
       </div>
