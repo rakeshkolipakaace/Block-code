@@ -23,7 +23,7 @@ import RGBLEDBlock from "./Actuators/RGB";
 import RelayBlock from "./Actuators/Relay";
 import LCD16x2Block from "./Actuators/16LCD";
 import ServoMotorBlock from "./Motors/Servomotor";
-import PushButtonNode from "./Motors/pushbutton";
+import PushButtonNode from "./Actuators/pushbutton";
 // Import looping nodes
 import BreakBlock from "./Looping/Break";
 import RepeatBlock from "./Looping/Repeat";
@@ -50,11 +50,29 @@ import VariableNode from "./General/variable";
 import "@xyflow/react/dist/style.css";
 
 const ALL_PINS = [
-  "D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","D10","D11","D12","D13",
-  "A0","A1","A2","A3","A4","A5"
+  "D0",
+  "D1",
+  "D2",
+  "D3",
+  "D4",
+  "D5",
+  "D6",
+  "D7",
+  "D8",
+  "D9",
+  "D10",
+  "D11",
+  "D12",
+  "D13",
+  "A0",
+  "A1",
+  "A2",
+  "A3",
+  "A4",
+  "A5",
 ];
 
-const PWM_PINS = new Set(["D3","D5","D6","D9","D10","D11"]);
+const PWM_PINS = new Set(["D3", "D5", "D6", "D9", "D10", "D11"]);
 
 const normalizePin = (value) => {
   if (value === null || value === undefined) return "";
@@ -84,7 +102,12 @@ const PIN_KEYS = [
 const extractPinsFromData = (data) => {
   const pins = [];
   for (const key of PIN_KEYS) {
-    if (data && data[key] !== undefined && data[key] !== null && String(data[key]).trim() !== "") {
+    if (
+      data &&
+      data[key] !== undefined &&
+      data[key] !== null &&
+      String(data[key]).trim() !== ""
+    ) {
       pins.push(normalizePin(data[key]));
     }
   }
