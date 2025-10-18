@@ -1,5 +1,6 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import PinSelect from "../common/PinSelect";
 
 const BuzzerNode = ({ data, selected, id }) => {
   const handleDataChange = (key, value) => {
@@ -102,12 +103,12 @@ const BuzzerNode = ({ data, selected, id }) => {
           Pins
         </h4>
         <label style={labelStyle}>Pin Number</label>
-        <input
-          type="number"
+        <PinSelect
           value={data.pin || ""}
-          onChange={(e) => handleDataChange("pin", e.target.value)}
-          placeholder="Enter pin number"
-          style={inputStyle}
+          onChange={(val) => handleDataChange("pin", val)}
+          availablePins={data.availablePins}
+          pwmPins={data.pwmPins}
+          selectStyle={{ width: "100%" }}
         />
       </div>
 
