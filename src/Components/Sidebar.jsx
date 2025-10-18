@@ -51,12 +51,19 @@ const Sidebar = ({ onAddBlock }) => {
     },
     {
       name: "Actuators",
-      subItems: ["Buzzer", "PWM LED", "RGB LED", "Relay", "16*2 LCD"],
+      subItems: [
+        "Buzzer",
+        "PWM LED",
+        "RGB LED",
+        "Relay",
+        "16*2 LCD",
+        "Push Button",
+      ],
     },
 
     {
       name: "Motors",
-      subItems: ["Servo Motor", "Push Button"],
+      subItems: ["Servo Motor"],
     },
     {
       name: "Display",
