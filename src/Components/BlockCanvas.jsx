@@ -49,6 +49,48 @@ import VariableNode from "./General/variable";
 
 import "@xyflow/react/dist/style.css";
 
+const ALL_PINS = [
+  "D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","D10","D11","D12","D13",
+  "A0","A1","A2","A3","A4","A5"
+];
+
+const PWM_PINS = new Set(["D3","D5","D6","D9","D10","D11"]);
+
+const normalizePin = (value) => {
+  if (value === null || value === undefined) return "";
+  const s = String(value).trim().toUpperCase();
+  if (s === "") return "";
+  if (/^\d+$/.test(s)) return `D${s}`;
+  if (/^D\d+$/.test(s)) return s;
+  if (/^A[0-5]$/.test(s)) return s;
+  return s;
+};
+
+const PIN_KEYS = [
+  "pin",
+  "dataPin",
+  "outPin",
+  "triggerPin",
+  "echoPin",
+  "redPin",
+  "greenPin",
+  "bluePin",
+  "servoPin",
+  "analogPin",
+  "sda",
+  "scl",
+];
+
+const extractPinsFromData = (data) => {
+  const pins = [];
+  for (const key of PIN_KEYS) {
+    if (data && data[key] !== undefined && data[key] !== null && String(data[key]).trim() !== "") {
+      pins.push(normalizePin(data[key]));
+    }
+  }
+  return pins.filter(Boolean);
+};
+
 // Map node types
 const nodeTypes = {
   ultrasonicSensor: UltrasonicSensorNode,
@@ -101,6 +143,11 @@ const FlowComponent = ({
 
   // Convert blocks to ReactFlow nodes
   useEffect(() => {
+    const usedPinsGlobal = new Set();
+    blocks.forEach((blk) => {
+      extractPinsFromData(blk.data).forEach((p) => usedPinsGlobal.add(p));
+    });
+
     const reactFlowNodes = blocks.map((block) => {
       let type = "default";
 
@@ -205,12 +252,20 @@ const FlowComponent = ({
           type = "default";
       }
 
+      // compute available pins for this node: allow its own selected pins plus others not used
+      const thisPins = new Set(extractPinsFromData(block.data));
+      const availablePins = ALL_PINS.filter(
+        (p) => !usedPinsGlobal.has(p) || thisPins.has(p)
+      );
+
       return {
         id: block.id.toString(),
         type,
         position: block.position,
         data: {
           ...block.data,
+          availablePins,
+          pwmPins: PWM_PINS,
           onChange: (key, value) => {
             onUpdateBlockData(block.id, { [key]: value });
           },
