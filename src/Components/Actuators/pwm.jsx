@@ -1,5 +1,6 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import PinSelect from "../common/PinSelect";
 
 const PWMLEDBlock = ({ data, selected, id }) => {
   const handleChange = (key, value) =>
@@ -41,10 +42,11 @@ const PWMLEDBlock = ({ data, selected, id }) => {
       </h3>
 
       <label>Pin</label>
-      <input
-        type="number"
+      <PinSelect
         value={data.pin || ""}
-        onChange={(e) => handleChange("pin", e.target.value)}
+        onChange={(val) => handleChange("pin", val)}
+        availablePins={data.availablePins}
+        pwmPins={data.pwmPins}
       />
 
       <label>Output</label>
