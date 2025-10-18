@@ -1,5 +1,6 @@
 import React from 'react';
 import { Handle, Position } from '@xyflow/react';
+import PinSelect from "../common/PinSelect";
 
 const LDRSensorNode = ({ data, selected, id }) => {
   const handleDataChange = (key, value) => {
@@ -65,12 +66,12 @@ const LDRSensorNode = ({ data, selected, id }) => {
       {/* Pins */}
       <div style={{ marginBottom: '12px' }}>
         <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '4px' }}>Pins</h4>
-        <input
-          type="number"
+        <PinSelect
           value={data.analogPin || ''}
-          onChange={(e) => handleDataChange('analogPin', e.target.value)}
-          placeholder="Analog pin"
-          style={{ border: '1px solid #d1d5db', borderRadius: '4px', padding: '4px 8px', fontSize: '14px' }}
+          onChange={(val) => handleDataChange('analogPin', val)}
+          availablePins={data.availablePins}
+          pwmPins={data.pwmPins}
+          selectStyle={{ width: '100%' }}
         />
       </div>
 
