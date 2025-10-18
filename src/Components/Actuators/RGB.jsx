@@ -1,5 +1,6 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import PinSelect from "../common/PinSelect";
 
 const RGBLEDBlock = ({ data, selected, id }) => {
   const handleChange = (key, value) =>
@@ -41,22 +42,25 @@ const RGBLEDBlock = ({ data, selected, id }) => {
       </h3>
 
       <label>Red Pin</label>
-      <input
-        type="number"
+      <PinSelect
         value={data.redPin || ""}
-        onChange={(e) => handleChange("redPin", e.target.value)}
+        onChange={(val) => handleChange("redPin", val)}
+        availablePins={data.availablePins}
+        pwmPins={data.pwmPins}
       />
       <label>Green Pin</label>
-      <input
-        type="number"
+      <PinSelect
         value={data.greenPin || ""}
-        onChange={(e) => handleChange("greenPin", e.target.value)}
+        onChange={(val) => handleChange("greenPin", val)}
+        availablePins={data.availablePins}
+        pwmPins={data.pwmPins}
       />
       <label>Blue Pin</label>
-      <input
-        type="number"
+      <PinSelect
         value={data.bluePin || ""}
-        onChange={(e) => handleChange("bluePin", e.target.value)}
+        onChange={(val) => handleChange("bluePin", val)}
+        availablePins={data.availablePins}
+        pwmPins={data.pwmPins}
       />
 
       <label>Color</label>
