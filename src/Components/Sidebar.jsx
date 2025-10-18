@@ -33,25 +33,27 @@ const Sidebar = ({ onAddBlock }) => {
       ],
     },
     {
-      name: "Actuators",
-      subItems: ["Buzzer", "PWM LED", "RGB LED", "Relay", "16*2 LCD"],
-    },
-    {
-      name: "General",
-      subItems: ["Print", "Assign", "Delay"],
+      name: "Condition",
+      subItems: ["if", "if-else"],
     },
     {
       name: "Looping",
       subItems: ["break", "repeat", "forever", "while", "for loop"],
     },
     {
-      name: "Condition",
-      subItems: ["if", "if-else"],
+      name: "General",
+      subItems: ["Print", "Assign", "Delay"],
     },
+
     {
       name: "GP/IO Pins",
       subItems: ["PWM", "GPIO pin", "Pin Write", "Pin read", "ADC"],
     },
+    {
+      name: "Actuators",
+      subItems: ["Buzzer", "PWM LED", "RGB LED", "Relay", "16*2 LCD"],
+    },
+
     {
       name: "Motors",
       subItems: ["Servo Motor", "Push Button"],
@@ -146,9 +148,25 @@ const Sidebar = ({ onAddBlock }) => {
     } else if (subItem === "PWM") {
       onAddBlock("gpioPwm", { pin: "2", frequency: "1000", duty: "512" });
     } else if (subItem === "1.3 OLED") {
-      onAddBlock("oled13", { port: "1", sck: "47", sda: "48", rotate: 0, top: 0, left: 0, text: "Hello world" });
+      onAddBlock("oled13", {
+        port: "1",
+        sck: "47",
+        sda: "48",
+        rotate: 0,
+        top: 0,
+        left: 0,
+        text: "Hello world",
+      });
     } else if (subItem === "LCD 16*2") {
-      onAddBlock("lcd16x2", { sda: "47", scl: "48", address: "0x27", text: "Hello world", row: 0, col: 0, clear: true });
+      onAddBlock("lcd16x2", {
+        sda: "47",
+        scl: "48",
+        address: "0x27",
+        text: "Hello world",
+        row: 0,
+        col: 0,
+        clear: true,
+      });
     } else if (subItem === "Print") {
       onAddBlock("print", { text: "Hello world" });
     } else if (subItem === "Assign") {
