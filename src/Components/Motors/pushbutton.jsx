@@ -1,5 +1,6 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import PinSelect from "../common/PinSelect";
 
 const PushButtonNode = ({ data, selected, id }) => {
   const handleDataChange = (key, value) => {
@@ -90,17 +91,12 @@ const PushButtonNode = ({ data, selected, id }) => {
         </h4>
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <label style={{ fontSize: "12px", color: "#6b7280" }}>Pin</label>
-          <input
-            type="number"
+          <PinSelect
             value={data.pin || ""}
-            onChange={(e) => handleDataChange("pin", e.target.value)}
-            placeholder="Enter pin number"
-            style={{
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              padding: "4px 8px",
-              fontSize: "14px",
-            }}
+            onChange={(val) => handleDataChange("pin", val)}
+            availablePins={data.availablePins}
+            pwmPins={data.pwmPins}
+            selectStyle={{ width: "100%" }}
           />
         </div>
       </div>
