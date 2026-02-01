@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { Handle, Position } from "@xyflow/react";
 import { FaQuestionCircle } from "react-icons/fa";
+import DeleteButton from "../common/DeleteButton";
 
 const OPERATORS = [
   { label: "=", value: "==" },
@@ -20,8 +22,8 @@ const IfBlock = ({ data, selected, id }) => {
       style={{
         background: "#19191d",
         borderRadius: 18,
-        minWidth: 320,
-        minHeight: 95,
+        minWidth: 300,
+        minHeight: 85,
         boxShadow: selected ? "0 0 10px #0a86eb" : "0 5px 18px #0008",
         fontFamily: "Inter, sans-serif",
         border: `2px solid ${selected ? "#0a86eb" : "#25252b"}`,
@@ -29,52 +31,41 @@ const IfBlock = ({ data, selected, id }) => {
         animation: "appear 0.8s cubic-bezier(.68,-0.55,.27,1.55)",
       }}
     >
+      {/* Handles */}
+      <Handle type="target" position={Position.Top} style={{ background: "#0a86eb", width: 8, height: 8 }} />
+      <Handle type="target" position={Position.Left} style={{ background: "#0a86eb", width: 8, height: 8 }} />
+      <Handle type="source" position={Position.Right} style={{ background: "#0a86eb", width: 8, height: 8 }} />
+      <Handle type="source" position={Position.Bottom} style={{ background: "#0a86eb", width: 8, height: 8 }} />
+
       {/* Header */}
       <div
         style={{
           background: "#0a86eb",
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
-          padding: "12px 18px",
+          padding: "8px 14px",
           color: "#fff",
           fontWeight: 700,
-          fontSize: 22,
+          fontSize: 20,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
         }}
       >
         If
-        <FaQuestionCircle style={{ fontSize: 19, color: "#fff" }} />
+        <FaQuestionCircle style={{ fontSize: 17, color: "#fff" }} />
       </div>
-      {/* Delete Button */}
-      <button
-        onClick={() => data?.onDelete && data.onDelete(parseFloat(id))}
-        style={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          width: 24,
-          height: 24,
-          borderRadius: "50%",
-          backgroundColor: "#ef4444",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-        title="Delete node"
-      >
-        ×
-      </button>
+
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
 
       {/* Output: True */}
       <div
         style={{
           position: "absolute",
-          right: -32,
+          right: -35,
           top: "57%",
           color: "#aaa",
-          fontSize: 15,
+          fontSize: 14,
         }}
       >
         True
@@ -85,10 +76,10 @@ const IfBlock = ({ data, selected, id }) => {
         style={{
           display: "flex",
           background: "#212128",
-          borderRadius: 14,
-          margin: "17px 16px",
-          padding: "13px 15px",
-          gap: 18,
+          borderRadius: 12,
+          margin: "14px 14px",
+          padding: "8px 10px",
+          gap: 12,
           alignItems: "center",
         }}
       >
@@ -96,30 +87,35 @@ const IfBlock = ({ data, selected, id }) => {
           type="text"
           value={left}
           onChange={(e) => setLeft(e.target.value)}
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
           style={{
             background: "transparent",
             border: "1.5px solid #3b3b46",
-            borderRadius: 8,
+            borderRadius: 6,
             color: "#eee",
-            fontSize: 18,
-            width: 75,
-            height: 36,
-            paddingLeft: 10,
+            fontSize: 15,
+            width: 70,
+            height: 28,
+            paddingLeft: 8,
             outline: "none",
           }}
         />
         <select
           value={operator}
           onChange={(e) => setOperator(e.target.value)}
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
           style={{
             background: "#19191d",
             border: "1.5px solid #3b3b46",
-            borderRadius: 8,
+            borderRadius: 6,
             color: "#eee",
-            fontSize: 18,
-            height: 36,
+            fontSize: 15,
+            height: 28,
             width: 55,
             textAlign: "center",
+            outline: "none",
           }}
         >
           {OPERATORS.map((op) => (
@@ -132,19 +128,22 @@ const IfBlock = ({ data, selected, id }) => {
           type="text"
           value={right}
           onChange={(e) => setRight(e.target.value)}
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
           style={{
             background: "transparent",
             border: "1.5px solid #3b3b46",
-            borderRadius: 8,
+            borderRadius: 6,
             color: "#eee",
-            fontSize: 18,
-            width: 52,
-            height: 36,
+            fontSize: 15,
+            width: 55,
+            height: 28,
             textAlign: "center",
             outline: "none",
           }}
         />
       </div>
+
       <style>
         {`
           @keyframes appear {
