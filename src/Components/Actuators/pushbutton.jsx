@@ -1,150 +1,101 @@
-import React from "react";
+import React, { useState } from "react";
 import { Handle, Position } from "@xyflow/react";
+import { FaCog } from "react-icons/fa";
 import PinSelect from "../common/PinSelect";
+import DeleteButton from "../common/DeleteButton";
+import NodeContainer from "../common/NodeContainer";
+import NodeHeader from "../common/NodeHeader";
+import NodeBody from "../common/NodeBody";
+import StandardHandles from "../common/StandardHandles";
 
 const PushButtonNode = ({ data, selected, id }) => {
-  const handleDataChange = (key, value) => {
-    if (data.onChange) {
-      data.onChange(key, value);
-    }
+  const [pin, setPin] = useState(data.pin || "");
+  const [value, setValue] = useState(data.value || "LOW");
+
+  const handleChange = (key, val) => {
+    // if (data.onChange) data.onChange(key, val);
   };
 
-  const handleDelete = () => {
-    if (data.onDelete) {
-      data.onDelete(parseFloat(id));
-    }
-  };
+  const primaryColor = "#10b981";
+  const borderColor = "#222233";
 
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        borderRadius: "16px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        border: `2px solid ${selected ? "#2563eb" : "#e5e7eb"}`,
-        padding: "12px",
-        width: "250px",
-        minHeight: "160px",
-        position: "relative",
-      }}
+    <NodeContainer
+      selected={selected}
+      primaryColor={primaryColor}
+      borderColor={borderColor}
+      minWidth={230}
+      minHeight={150}
+      background="#222233"
     >
-      {/* Delete Button */}
-      <button
-        onClick={handleDelete}
-        style={{
-          position: "absolute",
-          top: "8px",
-          right: "8px",
-          width: "24px",
-          height: "24px",
-          borderRadius: "50%",
-          backgroundColor: "#ef4444",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "14px",
-          fontWeight: "bold",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-          transition: "all 0.2s ease",
-          zIndex: 10,
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.backgroundColor = "#dc2626";
-          e.target.style.transform = "scale(1.1)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.backgroundColor = "#ef4444";
-          e.target.style.transform = "scale(1)";
-        }}
-        title="Delete node"
-      >
-        ×
-      </button>
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
 
-      <h3
-        style={{
-          textAlign: "center",
-          fontWeight: "bold",
-          color: "#2563eb",
-          marginBottom: "8px",
-          fontSize: "16px",
-          marginRight: "32px",
-        }}
-      >
-        Push Button
-      </h3>
+      <NodeHeader
+        title="Push Button"
+        color={primaryColor}
+        icon={<FaCog style={{ color: "#fff", fontSize: 18 }} />}
+      />
 
-      {/* Pins Section */}
-      <div style={{ marginBottom: "12px" }}>
-        <h4
-          style={{
-            fontSize: "14px",
-            fontWeight: "600",
-            color: "#374151",
-            marginBottom: "4px",
-          }}
-        >
-          Pins
-        </h4>
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <label style={{ fontSize: "12px", color: "#6b7280" }}>Pin</label>
+      <NodeBody gap={12}>
+        {/* Pin Selection */}
+        <div>
+          Pin{" "}
           <PinSelect
-            value={data.pin || ""}
-            onChange={(val) => handleDataChange("pin", val)}
+            value={pin}
+            onChange={(val) => {
+              setPin(val);
+              handleChange("pin", val);
+            }}
             availablePins={data.availablePins}
-            pwmPins={data.pwmPins}
-            selectStyle={{ width: "100%" }}
+            selectStyle={{
+              background: "#222",
+              color: "#7da6ff",
+              borderRadius: 8,
+              border: "none",
+              width: 60,
+              height: 28,
+              marginLeft: 6,
+            }}
           />
         </div>
-      </div>
 
-      {/* Variables Section */}
-      <div>
-        <h4
+        {/* Button State Control */}
+        <div
           style={{
-            fontSize: "14px",
-            fontWeight: "600",
-            color: "#374151",
-            marginBottom: "4px",
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
           }}
         >
-          State
-        </h4>
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <label style={{ fontSize: "12px", color: "#6b7280" }}>Value</label>
+          Value{" "}
           <select
-            value={data.value || "LOW"}
-            onChange={(e) => handleDataChange("value", e.target.value)}
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+              handleChange("value", e.target.value);
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
             style={{
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              padding: "4px 8px",
-              fontSize: "14px",
+              background: "#222",
+              color: "#00d26a",
+              borderRadius: 8,
+              border: "none",
+              width: 80,
+              height: 28,
+              textAlign: "center",
+              marginLeft: 6,
             }}
           >
             <option value="HIGH">HIGH</option>
             <option value="LOW">LOW</option>
           </select>
+          {/* Output Handle */}
         </div>
-      </div>
+      </NodeBody>
 
-      {/* Handles for connection */}
-      <Handle
-        type="target"
-        position={Position.Left}
-        id="input"
-        style={{ background: "#2563eb", width: "8px", height: "8px" }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="output"
-        style={{ background: "#2563eb", width: "8px", height: "8px" }}
-      />
-    </div>
+      <StandardHandles primaryColor="#3b82f6" />
+    </NodeContainer>
   );
 };
 
