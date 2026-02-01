@@ -1,76 +1,45 @@
 import React, { useState } from "react";
 import { FaCog } from "react-icons/fa";
+import DeleteButton from "../common/DeleteButton";
+import NodeContainer from "../common/NodeContainer";
+import NodeHeader from "../common/NodeHeader";
+import NodeBody from "../common/NodeBody";
+import StandardHandles from "../common/StandardHandles";
 
 const PWMBlock = ({ data, selected, id }) => {
   const [pin, setPin] = useState("2");
   const [frequency, setFrequency] = useState("1000");
   const [duty, setDuty] = useState("512");
 
+  const primaryColor = "#7b44ff";
+  const borderColor = "#222233";
+
   return (
-    <div
-      style={{
-        background: "#222233",
-        borderRadius: 20,
-        minWidth: 230,
-        minHeight: 115,
-        fontFamily: "Inter, sans-serif",
-        border: `2px solid ${selected ? "#7b44ff" : "#222233"}`,
-        position: "relative",
-        animation: "appear 0.7s cubic-bezier(.68,-0.55,.27,1.55)",
-        boxShadow: selected ? "0 0 10px #7b44ff" : "0 5px 18px #0007",
-      }}
+    <NodeContainer
+      selected={selected}
+      primaryColor={primaryColor}
+      borderColor={borderColor}
+      minWidth={230}
+      minHeight={115}
+      background="#222233"
     >
-      <button
-        onClick={() => data?.onDelete && data.onDelete(parseFloat(id))}
-        style={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          width: 24,
-          height: 24,
-          borderRadius: "50%",
-          backgroundColor: "#ef4444",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          zIndex: 1,
-        }}
-        title="Delete node"
-      >
-        ×
-      </button>
-      <div
-        style={{
-          background: "#7b44ff",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          padding: "10px 18px",
-          color: "#fff",
-          fontWeight: 700,
-          fontSize: 21,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        PWM
-        <FaCog style={{ color: "#fff", fontSize: 18 }} />
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 12,
-          padding: "16px 18px",
-          color: "#fff",
-        }}
-      >
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
+
+      <NodeHeader
+        title="PWM"
+        color={primaryColor}
+        icon={<FaCog style={{ color: "#fff", fontSize: 18 }} />}
+      />
+
+      <NodeBody gap={12}>
         <div>
           Pin{" "}
           <input
             type="text"
             value={pin}
             onChange={(e) => setPin(e.target.value)}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
             style={{
               background: "#222",
               color: "#7da6ff",
@@ -89,6 +58,8 @@ const PWMBlock = ({ data, selected, id }) => {
             type="text"
             value={frequency}
             onChange={(e) => setFrequency(e.target.value)}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
             style={{
               background: "#222",
               color: "#7da6ff",
@@ -107,6 +78,8 @@ const PWMBlock = ({ data, selected, id }) => {
             type="text"
             value={duty}
             onChange={(e) => setDuty(e.target.value)}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
             style={{
               background: "#222",
               color: "#7da6ff",
@@ -119,16 +92,10 @@ const PWMBlock = ({ data, selected, id }) => {
             }}
           />
         </div>
-      </div>
-      <style>
-        {`
-          @keyframes appear {
-            0% { opacity: 0; transform: scale(0.8);} 
-            100% { opacity: 1; transform: scale(1);} 
-          }
-        `}
-      </style>
-    </div>
+      </NodeBody>
+      <StandardHandles/>
+
+    </NodeContainer>
   );
 };
 
