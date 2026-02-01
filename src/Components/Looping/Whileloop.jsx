@@ -1,111 +1,63 @@
 import React, { useState } from "react";
 import { Handle, Position } from "@xyflow/react";
+import DeleteButton from "../common/DeleteButton";
+import NodeContainer from "../common/NodeContainer";
+import NodeHeader from "../common/NodeHeader";
+import NodeBody from "../common/NodeBody";
+import StandardHandles from "../common/StandardHandles";
 
-const WhileLoopBlock = ({ data, selected, id }) => {
-  const [condition, setCondition] = useState(data.condition || "True");
+export default function WhileLoopBlock({ data, selected, id }) {
+  const [condition, setCondition] = useState(data?.condition || "True");
 
-  const handleDataChange = (key, value) => {
-    if (data.onChange) data.onChange(key, value);
+  const handleChange = (key, value) => {
+    data?.onChange && data.onChange(key, value);
   };
 
-  const handleDelete = () => {
-    if (data.onDelete) data.onDelete(parseFloat(id));
-  };
+  const primaryColor = "#16a34a";
+  const borderColor = "#15803d";
 
   return (
-    <div
-      style={{
-        background: "#19c37d",
-        border: `2px solid ${selected ? "#10b981" : "#16a34a"}`,
-        borderRadius: 16,
-        color: "#fff",
-        boxShadow: selected ? "0 0 10px #16a34a" : "0 5px 18px #0008",
-        padding: 18,
-        minWidth: 170,
-        fontFamily: "Inter, sans-serif",
-        position: "relative",
-        animation: "appear 0.8s cubic-bezier(.68,-0.55,.27,1.55)",
-      }}
+    <NodeContainer
+      selected={selected}
+      primaryColor={primaryColor}
+      borderColor={borderColor}
+      minWidth={230}
+      minHeight={140}
+      background="#1e1e2e"
+      style={{ boxShadow: selected ? "0 0 12px #16a34a" : "0 5px 18px #0007" }}
     >
-      {/* Delete Button */}
-      <button
-        onClick={handleDelete}
-        style={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          width: 24,
-          height: 24,
-          borderRadius: "50%",
-          backgroundColor: "#ef4444",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          lineHeight: 0,
-        }}
-        title="Delete node"
-        onMouseEnter={(e) => {
-          e.target.style.backgroundColor = "#dc2626";
-          e.target.style.transform = "scale(1.1)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.backgroundColor = "#ef4444";
-          e.target.style.transform = "scale(1)";
-        }}
-      >
-        ×
-      </button>
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
 
-      {/* Title */}
-      <div style={{ fontWeight: 600, fontSize: 18, marginBottom: 10 }}>
-        While Loop <span style={{ float: "right" }}>∞</span>
-      </div>
+      <NodeHeader title="While Loop" color={primaryColor} icon={<span>∞</span>} />
 
-      {/* Condition Input */}
-      <div>
-        Condition
+      <NodeBody gap={12}>
+        <label style={{ fontSize: 14, fontWeight: 500, color: "#ccc" }}>
+          Condition
+        </label>
         <input
-          type="text"
           value={condition}
           onChange={(e) => {
             setCondition(e.target.value);
-            handleDataChange("condition", e.target.value);
+            handleChange("condition", e.target.value);
           }}
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
           style={{
-            marginLeft: 8,
-            background: "#222",
-            color: "#fae",
-            border: "1px solid #444",
-            borderRadius: 6,
-            minWidth: 40,
-            padding: "2px 6px",
+            background: "#111",
+            border: "1px solid #333",
+            borderRadius: 8,
+            color: "#22c55e",
+            padding: "4px 6px",
+            width: "100%",
+            fontSize: 13,
+            height: "20px",
+            outline: "none",
           }}
+          placeholder="Enter condition"
         />
-      </div>
+      </NodeBody>
 
-      {/* Handles */}
-      <Handle
-        type="target"
-        position={Position.Top}
-        style={{ background: "#16a34a", width: 8, height: 8 }}
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        style={{ background: "#16a34a", width: 8, height: 8 }}
-      />
-
-      {/* Animation */}
-      <style>
-        {`
-          @keyframes appear {
-            0% { opacity: 0; transform: scale(0.7);}
-            100% { opacity: 1; transform: scale(1);}
-          }
-        `}
-      </style>
-    </div>
+      <StandardHandles primaryColor={primaryColor} />
+    </NodeContainer>
   );
-};
-
-export default WhileLoopBlock;
+}
