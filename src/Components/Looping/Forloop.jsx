@@ -1,133 +1,95 @@
 import React, { useState } from "react";
 import { Handle, Position } from "@xyflow/react";
+import DeleteButton from "../common/DeleteButton";
+import NodeContainer from "../common/NodeContainer";
+import NodeHeader from "../common/NodeHeader";
+import NodeBody from "../common/NodeBody";
+import StandardHandles from "../common/StandardHandles";
 
-const ForLoopBlock = ({ data, selected, id }) => {
-  const [variable, setVariable] = useState(data.variable || "i");
-  const [range, setRange] = useState(data.range || "range(10)");
+export default function ForLoopBlock({ data, selected, id }) {
+  const [variable, setVariable] = useState(data?.variable || "i");
+  const [range, setRange] = useState(data?.range || "range(10)");
 
-  const handleDataChange = (key, value) => {
-    data.onChange && data.onChange(key, value);
+  const handleChange = (key, value) => {
+    data?.onChange && data.onChange(key, value);
   };
 
-  const handleDelete = () => {
-    data.onDelete && data.onDelete(parseFloat(id));
-  };
+  const primaryColor = "#7b44ff";
+  const borderColor = "#5b21b6";
 
   return (
-    <div
-      style={{
-        background: "#7b44ff",
-        borderRadius: 20,
-        color: "#fff",
-        boxShadow: selected ? "0 0 12px #b191ff" : "0 5px 18px #0009",
-        padding: 18,
-        fontFamily: "Inter, sans-serif",
-        minWidth: 240,
-        animation: "appear 0.8s cubic-bezier(.68,-0.55,.27,1.55)",
-        position: "relative",
-      }}
+    <NodeContainer
+      selected={selected}
+      primaryColor={primaryColor}
+      borderColor={borderColor}
+      minWidth={230}
+      minHeight={160}
+      background="#1e1e2e"
+      style={{ boxShadow: selected ? "0 0 12px #a78bfa" : "0 5px 18px #0007" }}
     >
-      {/* Delete button */}
-      <button
-        onClick={handleDelete}
-        style={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          width: 24,
-          height: 24,
-          borderRadius: "50%",
-          backgroundColor: "#ef4444",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          fontWeight: "bold",
-          fontSize: 14,
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.backgroundColor = "#dc2626";
-          e.target.style.transform = "scale(1.1)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.backgroundColor = "#ef4444";
-          e.target.style.transform = "scale(1)";
-        }}
-      >
-        ×
-      </button>
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
 
-      {/* Title */}
-      <div style={{ fontWeight: 600, fontSize: 20, marginBottom: 10 }}>
-        For Loop <span style={{ float: "right" }}>∞</span>
-      </div>
+      <NodeHeader title="For Loop" color={primaryColor} icon={<span>∞</span>} />
 
-      {/* Variable Input */}
-      <div style={{ marginBottom: 10 }}>
-        Variable
-        <input
-          type="text"
-          value={variable}
-          onChange={(e) => {
-            setVariable(e.target.value);
-            handleDataChange("variable", e.target.value);
-          }}
-          style={{
-            marginLeft: 8,
-            background: "#222",
-            color: "#fae",
-            border: "1px solid #444",
-            borderRadius: 6,
-            minWidth: 40,
-            padding: "2px 6px",
-          }}
-        />
-      </div>
+      <NodeBody gap={10}>
+        {/* Variable Input */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <label style={{ fontSize: 14, fontWeight: 500, color: "#ccc" }}>
+            Variable
+          </label>
+          <input
+            value={variable}
+            onChange={(e) => {
+              setVariable(e.target.value);
+              handleChange("variable", e.target.value);
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            style={{
+              background: "#111",
+              border: "1px solid #333",
+              borderRadius: 8,
+              color: "#a78bfa",
+              padding: "4px 6px",
+              width: "100%",
+              fontSize: 13,
+              height: "20px",
+              outline: "none",
+            }}
+            placeholder="Enter variable"
+          />
+        </div>
 
-      {/* Range Input */}
-      <div style={{ marginBottom: 5 }}>
-        Range
-        <input
-          type="text"
-          value={range}
-          onChange={(e) => {
-            setRange(e.target.value);
-            handleDataChange("range", e.target.value);
-          }}
-          style={{
-            marginLeft: 8,
-            background: "#222",
-            color: "#fae",
-            border: "1px solid #444",
-            borderRadius: 6,
-            minWidth: 40,
-            padding: "2px 6px",
-          }}
-        />
-      </div>
+        {/* Range Input */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <label style={{ fontSize: 14, fontWeight: 500, color: "#ccc" }}>
+            Range
+          </label>
+          <input
+            value={range}
+            onChange={(e) => {
+              setRange(e.target.value);
+              handleChange("range", e.target.value);
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            style={{
+              background: "#111",
+              border: "1px solid #333",
+              borderRadius: 8,
+              color: "#a78bfa",
+              padding: "4px 6px",
+              width: "100%",
+              fontSize: 13,
+              height: "20px",
+              outline: "none",
+            }}
+            placeholder="range(10)"
+          />
+        </div>
+      </NodeBody>
 
-      {/* Handles */}
-      <Handle
-        type="target"
-        position={Position.Top}
-        style={{ background: "#b191ff" }}
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        style={{ background: "#b191ff" }}
-      />
-
-      {/* Animation */}
-      <style>
-        {`
-          @keyframes appear {
-            0% { opacity: 0; transform: scale(0.7); }
-            100% { opacity: 1; transform: scale(1); }
-          }
-        `}
-      </style>
-    </div>
+      <StandardHandles primaryColor="#a78bfa" />
+    </NodeContainer>
   );
-};
-
-export default ForLoopBlock;
+}
