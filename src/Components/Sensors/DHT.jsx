@@ -1,170 +1,135 @@
-import React from "react";
+import React, { useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import PinSelect from "../common/PinSelect";
+import DeleteButton from "../common/DeleteButton";
+import NodeContainer from "../common/NodeContainer";
+import NodeHeader from "../common/NodeHeader";
+import NodeBody from "../common/NodeBody";
+import StandardHandles from "../common/StandardHandles";
 
-const DHT11SensorNode = ({ data, selected, id }) => {
-  const handleDataChange = (key, value) => {
-    if (data.onChange) {
-      data.onChange(key, value);
-    }
+export default function DHT11SensorNode({ data, selected, id }) {
+  const [form, setForm] = useState({
+    dataPin: data?.dataPin || "",
+    temperature: data?.temperature || "",
+    humidity: data?.humidity || "",
+  });
+
+  const handleChange = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    // if (data.onChange) data.onChange(key, value);
   };
 
-  const handleDelete = () => {
-    if (data.onDelete) {
-      data.onDelete(parseFloat(id));
-    }
-  };
+  const stopEvent = (e) => e.stopPropagation();
+
+  const primaryColor = "#43a047";
+  const borderColor = "#1e7e34";
 
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        borderRadius: "16px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        border: `2px solid ${selected ? "#43a047" : "#e5e7eb"}`,
-        padding: "12px",
-        width: "256px",
-        minHeight: "200px",
-        position: "relative",
-      }}
+    <NodeContainer
+      selected={selected}
+      primaryColor={primaryColor}
+      borderColor={borderColor}
+      minWidth={230}
+      minHeight={180}
     >
-      {/* Delete Button */}
-      <button
-        onClick={handleDelete}
-        style={{
-          position: "absolute",
-          top: "8px",
-          right: "8px",
-          width: "24px",
-          height: "24px",
-          borderRadius: "50%",
-          backgroundColor: "#ef4444",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "14px",
-          fontWeight: "bold",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-          transition: "all 0.2s ease",
-          zIndex: 10,
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.backgroundColor = "#dc2626";
-          e.target.style.transform = "scale(1.1)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.backgroundColor = "#ef4444";
-          e.target.style.transform = "scale(1)";
-        }}
-        title="Delete node"
-      >
-        ×
-      </button>
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
 
-      <h3
-        style={{
-          textAlign: "center",
-          fontWeight: "bold",
-          color: "#43a047",
-          marginBottom: "8px",
-          fontSize: "16px",
-          marginRight: "32px", // Avoid overlap with delete button
-        }}
-      >
-        DHT11 Sensor
-      </h3>
+      <NodeHeader title="DHT11 Sensor" color={primaryColor} />
 
-      {/* Pins Section */}
-      <div style={{ marginBottom: "12px" }}>
-        <h4
-          style={{
-            fontSize: "14px",
-            fontWeight: "600",
-            color: "#374151",
-            marginBottom: "4px",
-          }}
-        >
-          Pins
-        </h4>
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <label style={{ fontSize: "12px", color: "#6b7280" }}>Data Pin</label>
-          <PinSelect
-            value={data.dataPin || ""}
-            onChange={(val) => handleDataChange("dataPin", val)}
-            availablePins={data.availablePins}
-            pwmPins={data.pwmPins}
-            selectStyle={{ width: "100%" }}
-          />
+      <NodeBody>
+        {/* Data Pin */}
+        <div>
+          Data Pin <PinSelect />
         </div>
-      </div>
 
-      {/* Variables Section */}
-      <div>
-        <h4
+        {/* Temperature */}
+        <div
           style={{
-            fontSize: "14px",
-            fontWeight: "600",
-            color: "#374151",
-            marginBottom: "4px",
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
           }}
         >
-          Variables
-        </h4>
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <label style={{ fontSize: "12px", color: "#6b7280" }}>
-            Temperature
-          </label>
+          Temperature{" "}
           <input
             type="text"
-            value={data.temperature || ""}
-            onChange={(e) => handleDataChange("temperature", e.target.value)}
+            value={form.temperature}
+            onChange={(e) => handleChange("temperature", e.target.value)}
+            onPointerDown={stopEvent}
+            onMouseDown={stopEvent}
             placeholder="temperature"
             style={{
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              padding: "4px 8px",
-              fontSize: "14px",
+              background: "#111",
+              border: "1px solid #333",
+              borderRadius: 8,
+              color: "#22c55e",
+              width: 90,
+              height: 26,
+              textAlign: "center",
+              marginLeft: 8,
+              outline: "none",
             }}
           />
-
-          <label
-            style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}
-          >
-            Humidity
-          </label>
-          <input
-            type="text"
-            value={data.humidity || ""}
-            onChange={(e) => handleDataChange("humidity", e.target.value)}
-            placeholder="humidity"
+          <Handle
+            type="source"
+            position={Position.Right}
+            id="temperature"
             style={{
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              padding: "4px 8px",
-              fontSize: "14px",
+              background: "#22c55e",
+              width: 10,
+              height: 10,
+              right: -20,
+              top: "50%",
+              transform: "translateY(-50%)",
             }}
           />
         </div>
-      </div>
 
-      {/* Handles for connection */}
-      <Handle
-        type="target"
-        position={Position.Left}
-        id="input"
-        style={{ background: "#43a047", width: "8px", height: "8px" }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="output"
-        style={{ background: "#43a047", width: "8px", height: "8px" }}
-      />
-    </div>
+        {/* Humidity */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
+          }}
+        >
+          Humidity{" "}
+          <input
+            type="text"
+            value={form.humidity}
+            onChange={(e) => handleChange("humidity", e.target.value)}
+            onPointerDown={stopEvent}
+            onMouseDown={stopEvent}
+            placeholder="humidity"
+            style={{
+              background: "#111",
+              border: "1px solid #333",
+              borderRadius: 8,
+              color: "#3b82f6",
+              width: 90,
+              height: 26,
+              textAlign: "center",
+              marginLeft: 8,
+              outline: "none",
+            }}
+          />
+          <Handle
+            type="source"
+            position={Position.Right}
+            id="humidity"
+            style={{
+              background: "#22c55e",
+              width: 10,
+              height: 10,
+              right: -20,
+              top: "50%",
+              transform: "translateY(-50%)",
+            }}
+          />
+        </div>
+      </NodeBody>
+
+      <StandardHandles primaryColor={primaryColor} />
+    </NodeContainer>
   );
-};
-
-export default DHT11SensorNode;
+}
