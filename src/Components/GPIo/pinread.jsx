@@ -1,75 +1,46 @@
 import React, { useState } from "react";
+import { Handle, Position } from "@xyflow/react";
 import { FaCog } from "react-icons/fa";
+import DeleteButton from "../common/DeleteButton";
+import NodeContainer from "../common/NodeContainer";
+import NodeHeader from "../common/NodeHeader";
+import NodeBody from "../common/NodeBody";
+import StandardHandles from "../common/StandardHandles";
 
 const PinReadBlock = ({ data, selected, id }) => {
   const [pin, setPin] = useState("4");
   const [store, setStore] = useState("value");
 
+  const primaryColor = "#4266c0";
+  const borderColor = "#222233";
+
   return (
-    <div
-      style={{
-        background: "#222233",
-        borderRadius: 20,
-        minWidth: 215,
-        minHeight: 92,
-        fontFamily: "Inter, sans-serif",
-        border: `2px solid ${selected ? "#4266c0" : "#222233"}`,
-        position: "relative",
-        animation: "appear 0.7s cubic-bezier(.68,-0.55,.27,1.55)",
-        boxShadow: selected ? "0 0 10px #4266c0" : "0 5px 18px #0007",
-      }}
+    <NodeContainer
+      selected={selected}
+      primaryColor={primaryColor}
+      borderColor={borderColor}
+      minWidth={230}
+      minHeight={120}
+      background="#222233"
     >
-      <button
-        onClick={() => data?.onDelete && data.onDelete(parseFloat(id))}
-        style={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          width: 24,
-          height: 24,
-          borderRadius: "50%",
-          backgroundColor: "#ef4444",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          zIndex: 1,
-        }}
-        title="Delete node"
-      >
-        ×
-      </button>
-      <div
-        style={{
-          background: "#4266c0",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          padding: "10px 18px",
-          color: "#fff",
-          fontWeight: 700,
-          fontSize: 21,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        Pin Read
-        <FaCog style={{ color: "#fff", fontSize: 18 }} />
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 12,
-          padding: "16px 18px",
-          color: "#fff",
-        }}
-      >
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
+
+      <NodeHeader
+        title="Pin Read"
+        color={primaryColor}
+        icon={<FaCog style={{ color: "#fff", fontSize: 18 }} />}
+      />
+
+      <NodeBody gap={12}>
+        {/* Pin Input */}
         <div>
           Pin{" "}
           <input
             type="text"
             value={pin}
             onChange={(e) => setPin(e.target.value)}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
             style={{
               background: "#222",
               color: "#7da6ff",
@@ -82,12 +53,22 @@ const PinReadBlock = ({ data, selected, id }) => {
             }}
           />
         </div>
-        <div>
+
+        {/* Store In Field + Handle (precise alignment) */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
+          }}
+        >
           Store In{" "}
           <input
             type="text"
             value={store}
             onChange={(e) => setStore(e.target.value)}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
             style={{
               background: "#222",
               color: "#00d26a",
@@ -99,28 +80,29 @@ const PinReadBlock = ({ data, selected, id }) => {
               marginLeft: 6,
             }}
           />
-          <span
+
+          {/* ✅ Handle positioned exactly beside input field */}
+          <Handle
+            type="source"
+            position={Position.Right}
+            id="storeOutput"
             style={{
-              display: "inline-block",
-              width: 18,
-              height: 18,
               background: "#00d26a",
-              borderRadius: "50%",
-              marginLeft: 8,
-              verticalAlign: "middle",
+              width: 10,
+              height: 10,
+              position: "absolute",
+              right: -18, // distance from the right side of input box
+              top: "50%", // vertically centered with input field
+              transform: "translateY(-50%)",
+              border: "2px solid #fff",
+              zIndex: 5,
             }}
           />
         </div>
-      </div>
-      <style>
-        {`
-          @keyframes appear {
-            0% { opacity: 0; transform: scale(0.8);} 
-            100% { opacity: 1; transform: scale(1);} 
-          }
-        `}
-      </style>
-    </div>
+      </NodeBody>
+
+      <StandardHandles primaryColor="#f97316" />
+    </NodeContainer>
   );
 };
 
