@@ -204,7 +204,7 @@ const FlowComponent = ({
           type = "relay";
           break;
         case "lcd":
-          type = "lcd";
+          type = "lcd16x2";
           break;
         case "servoMotor":
           type = "servoMotor";
