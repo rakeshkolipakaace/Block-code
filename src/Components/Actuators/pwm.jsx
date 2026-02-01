@@ -1,65 +1,103 @@
-import React from "react";
+import React, { useState } from "react";
 import { Handle, Position } from "@xyflow/react";
+import { FaLightbulb } from "react-icons/fa";
 import PinSelect from "../common/PinSelect";
+import DeleteButton from "../common/DeleteButton";
+import NodeContainer from "../common/NodeContainer";
+import NodeHeader from "../common/NodeHeader";
+import NodeBody from "../common/NodeBody";
+import StandardHandles from "../common/StandardHandles";
 
 const PWMLEDBlock = ({ data, selected, id }) => {
-  const handleChange = (key, value) =>
-    data.onChange && data.onChange(key, value);
-  const handleDelete = () => data.onDelete && data.onDelete(parseFloat(id));
+  const [pin, setPin] = useState(data.pin || "");
+  const [value, setValue] = useState(data.value || "LOW");
+
+  const handleChange = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
+  };
+
+  const primaryColor = "#10b981";
+  const borderColor = "#222233";
 
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        borderRadius: "16px",
-        border: `2px solid ${selected ? "#10b981" : "#e5e7eb"}`,
-        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-        padding: "12px",
-        width: "256px",
-        position: "relative",
-      }}
+    <NodeContainer
+      selected={selected}
+      primaryColor={primaryColor}
+      borderColor={borderColor}
+      minWidth={230}
+      minHeight={150}
+      background="#222233"
     >
-      <button
-        onClick={handleDelete}
-        style={{
-          position: "absolute",
-          top: "8px",
-          right: "8px",
-          background: "#ef4444",
-          color: "white",
-          border: "none",
-          borderRadius: "50%",
-          width: "24px",
-          height: "24px",
-          cursor: "pointer",
-        }}
-      >
-        ×
-      </button>
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
 
-      <h3 style={{ textAlign: "center", color: "#10b981", fontWeight: "bold" }}>
-        PWM LED
-      </h3>
-
-      <label>Pin</label>
-      <PinSelect
-        value={data.pin || ""}
-        onChange={(val) => handleChange("pin", val)}
-        availablePins={data.availablePins}
-        pwmPins={data.pwmPins}
+      <NodeHeader
+        title="PWM LED"
+        color={primaryColor}
+        icon={<FaLightbulb style={{ color: "#fff", fontSize: 18 }} />}
       />
 
-      <label>Output</label>
-      <input
-        type="text"
-        value={data.output || ""}
-        onChange={(e) => handleChange("output", e.target.value)}
-        placeholder="HIGH / LOW"
-      />
+      <NodeBody gap={12}>
+        {/* Pin Selection */}
+        <div>
+          Pin{" "}
+          <PinSelect
+            value={pin}
+            onChange={(val) => {
+              setPin(val);
+              handleChange("pin", val);
+            }}
+            availablePins={data.availablePins}
+            pwmPins={data.pwmPins}
+            selectStyle={{
+              background: "#222",
+              color: "#7da6ff",
+              borderRadius: 8,
+              border: "none",
+              width: 60,
+              height: 28,
+              marginLeft: 6,
+            }}
+          />
+        </div>
 
-      <Handle type="target" position={Position.Left} />
-      <Handle type="source" position={Position.Right} />
-    </div>
+        {/* Brightness Control */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
+          }}
+        >
+         Value{" "}
+          <select
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+              handleChange("value", e.target.value);
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            style={{
+              background: "#222",
+              color: "#00d26a",
+              borderRadius: 8,
+              border: "none",
+              width: 80,
+              height: 28,
+              textAlign: "center",
+              marginLeft: 6,
+            }}
+          >
+            <option value="HIGH">HIGH</option>
+            <option value="LOW">LOW</option>
+          </select>
+          {/* Handle beside slider */}
+         
+        </div>
+      </NodeBody>
+
+      <StandardHandles primaryColor="#3b82f6" />
+    </NodeContainer>
   );
 };
 
