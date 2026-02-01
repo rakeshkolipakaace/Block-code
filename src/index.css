@@ -98,9 +98,9 @@ body {
   cursor: grab;
 }
 
-/* .react-flow__node-draggable:active {
+.react-flow__node-draggable:active {
   cursor: grabbing;
-} */
+}
 
 /* Handle styles */
 .react-flow__handle {
@@ -135,8 +135,8 @@ button:hover {
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
+ outline: 3px solid #7f1d1d; 
+  outline-offset: 2px;}
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -148,5 +148,10 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+
+  .btn{
+    width:100px;
+
   }
 }
