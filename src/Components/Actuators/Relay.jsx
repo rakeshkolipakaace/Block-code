@@ -1,73 +1,123 @@
-import React from "react";
+import React, { useState } from "react";
 import { Handle, Position } from "@xyflow/react";
+import { FaBolt } from "react-icons/fa";
 import PinSelect from "../common/PinSelect";
+import DeleteButton from "../common/DeleteButton";
+import NodeContainer from "../common/NodeContainer";
+import NodeHeader from "../common/NodeHeader";
+import NodeBody from "../common/NodeBody";
+import StandardHandles from "../common/StandardHandles";
 
 const RelayBlock = ({ data, selected, id }) => {
-  const handleChange = (key, value) =>
-    data.onChange && data.onChange(key, value);
-  const handleDelete = () => data.onDelete && data.onDelete(parseFloat(id));
+  const [pin, setPin] = useState(data.pin || "");
+  const [no, setNo] = useState(data.no || "LOW");
+  const [nc, setNc] = useState(data.nc || "HIGH");
+
+  const handleChange = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
+  };
+
+  const primaryColor = "#f59e0b";
+  const borderColor = "#1e293b";
 
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        borderRadius: "16px",
-        border: `2px solid ${selected ? "#8b5cf6" : "#e5e7eb"}`,
-        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-        padding: "12px",
-        width: "260px",
-        position: "relative",
-      }}
+    <NodeContainer
+      selected={selected}
+      primaryColor={primaryColor}
+      borderColor={borderColor}
+      minWidth={250}
+      minHeight={180}
+      background="#1e293b"
     >
-      <button
-        onClick={handleDelete}
-        style={{
-          position: "absolute",
-          top: "8px",
-          right: "8px",
-          background: "#ef4444",
-          color: "white",
-          border: "none",
-          borderRadius: "50%",
-          width: "24px",
-          height: "24px",
-          cursor: "pointer",
-        }}
-      >
-        ×
-      </button>
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
 
-      <h3 style={{ textAlign: "center", color: "#8b5cf6", fontWeight: "bold" }}>
-        Relay
-      </h3>
-
-      <label>Pin (IN)</label>
-      <PinSelect
-        value={data.pin || ""}
-        onChange={(val) => handleChange("pin", val)}
-        availablePins={data.availablePins}
-        pwmPins={data.pwmPins}
+      <NodeHeader
+        title="Relay"
+        color={primaryColor}
+        icon={<FaBolt style={{ color: "#fff", fontSize: 18 }} />}
       />
 
-      <label>NO (High/Low)</label>
-      <input
-        type="text"
-        value={data.no || ""}
-        onChange={(e) => handleChange("no", e.target.value)}
-        placeholder="HIGH / LOW"
-      />
+      <NodeBody gap={10} padding="14px 18px">
+        {/* Pin (IN) */}
+        <div>
+          Pin (IN){" "}
+          <PinSelect
+            value={pin}
+            onChange={(val) => {
+              setPin(val);
+              handleChange("pin", val);
+            }}
+            availablePins={data.availablePins}
+            pwmPins={data.pwmPins}
+            selectStyle={{
+              background: "#222",
+              color: "#facc15",
+              borderRadius: 8,
+              border: "none",
+              width: 80,
+              height: 28,
+              marginLeft: 6,
+            }}
+          />
+        </div>
 
-      <label>NC (High/Low)</label>
-      <input
-        type="text"
-        value={data.nc || ""}
-        onChange={(e) => handleChange("nc", e.target.value)}
-        placeholder="HIGH / LOW"
-      />
+        {/* NO Dropdown */}
+        <div>
+          NO (High/Low){" "}
+          <select
+            value={no}
+            onChange={(e) => {
+              setNo(e.target.value);
+              handleChange("no", e.target.value);
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            style={{
+              background: "#222",
+              color: "#fbbf24",
+              borderRadius: 8,
+              border: "none",
+              width: 100,
+              height: 28,
+              marginLeft: 6,
+              textAlign: "center",
+            }}
+          >
+            <option value="HIGH">HIGH</option>
+            <option value="LOW">LOW</option>
+          </select>
+        </div>
 
-      <Handle type="target" position={Position.Left} />
-      <Handle type="source" position={Position.Right} />
-    </div>
+        {/* NC Dropdown */}
+        <div>
+          NC (High/Low){" "}
+          <select
+            value={nc}
+            onChange={(e) => {
+              setNc(e.target.value);
+              handleChange("nc", e.target.value);
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            style={{
+              background: "#222",
+              color: "#fbbf24",
+              borderRadius: 8,
+              border: "none",
+              width: 100,
+              height: 28,
+              marginLeft: 6,
+              textAlign: "center",
+            }}
+          >
+            <option value="HIGH">HIGH</option>
+            <option value="LOW">LOW</option>
+          </select>
+        </div>
+      </NodeBody>
+
+      <StandardHandles primaryColor={primaryColor} bottomId="output" bottomOffset={-10} />
+    </NodeContainer>
   );
 };
 
