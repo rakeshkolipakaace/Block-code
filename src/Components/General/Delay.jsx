@@ -1,5 +1,7 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import DeleteButton from "../common/DeleteButton";
+import StandardHandles from "../common/StandardHandles";
 
 export default function SleepNode({ data, selected, id }) {
   return (
@@ -10,8 +12,8 @@ export default function SleepNode({ data, selected, id }) {
         borderRadius: "50%",
         color: "#fff",
         fontFamily: "Inter, sans-serif",
-        width: 100,
-        height: 100,
+        width: 130,
+        height: 130,
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -20,25 +22,7 @@ export default function SleepNode({ data, selected, id }) {
         position: "relative",
       }}
     >
-      <button
-        onClick={() => data?.onDelete && data.onDelete(parseFloat(id))}
-        style={{
-          position: "absolute",
-          top: 6,
-          right: 6,
-          width: 22,
-          height: 22,
-
-          borderRadius: "50%",
-          background: "#ef4444",
-          color: "#fff",
-          border: "none",
-          cursor: "pointer",
-        }}
-        title="Delete node"
-      >
-        ×
-      </button>
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
       <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>
         Delay
       </div>
@@ -64,18 +48,18 @@ export default function SleepNode({ data, selected, id }) {
             width: 46,
             padding: "4px 6px",
             marginRight: 10,
-            
           }}
           defaultValue={data?.ms ?? 1}
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
           onChange={(e) => {
             const v = e.target.value === "" ? "" : Number(e.target.value);
-            data?.onChange && data.onChange("ms", v);
+            // data?.onChange && data.onChange("ms", v);
           }}
         />
       </div>
 
-      <Handle type="target" position={Position.Top} />
-      <Handle type="source" position={Position.Bottom} />
+      <StandardHandles primaryColor={selected ? "#f43f5e" : "#9f1239"} />
     </div>
   );
 }
