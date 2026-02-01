@@ -1,14 +1,13 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
 import { FaArrowsRotate } from "react-icons/fa6";
+import DeleteButton from "../common/DeleteButton";
+import StandardHandles from "../common/StandardHandles";
+
 
 const ForeverLoopBlock = ({ data, selected, id }) => {
   const handleDataChange = (key, value) => {
     data.onChange && data.onChange(key, value);
-  };
-
-  const handleDelete = () => {
-    data.onDelete && data.onDelete(parseFloat(id));
   };
 
   return (
@@ -16,9 +15,9 @@ const ForeverLoopBlock = ({ data, selected, id }) => {
       style={{
         background: "#001c18",
         border: "2px solid #16d798",
-        borderRadius: "36% / 56%",
+        borderRadius: "500px",
         color: "#16d798",
-        minWidth: 180,
+        minWidth: 220,
         minHeight: 100,
         fontFamily: "Inter, sans-serif",
         boxShadow: selected ? "0 0 10px #16d798" : "0 5px 18px #0008",
@@ -31,24 +30,7 @@ const ForeverLoopBlock = ({ data, selected, id }) => {
         position: "relative",
       }}
     >
-      <button
-        onClick={handleDelete}
-        style={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          width: 24,
-          height: 24,
-          borderRadius: "50%",
-          backgroundColor: "#ef4444",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-        title="Delete node"
-      >
-        ×
-      </button>
+     <DeleteButton onDelete={data?.onDelete} nodeId={id} />
       <span style={{ color: "#fff", fontSize: 18, marginBottom: 8 }}>
         Forever Loop
       </span>
@@ -70,16 +52,7 @@ const ForeverLoopBlock = ({ data, selected, id }) => {
         />
       </span>
 
-      <Handle
-        type="target"
-        position={Position.Top}
-        style={{ background: "#16d798" }}
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        style={{ background: "#16d798" }}
-      />
+      <StandardHandles />
 
       <style>
         {`
