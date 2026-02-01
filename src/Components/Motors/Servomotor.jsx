@@ -1,150 +1,115 @@
-import React from "react";
+import React, { useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import PinSelect from "../common/PinSelect";
+import DeleteButton from "../common/DeleteButton";
+import NodeContainer from "../common/NodeContainer";
+import NodeHeader from "../common/NodeHeader";
+import NodeBody from "../common/NodeBody";
+import StandardHandles from "../common/StandardHandles";
 
 const ServoMotorBlock = ({ data, selected, id }) => {
-  const handleDataChange = (key, value) => {
-    if (data.onChange) data.onChange(key, value);
+  const [servoPin, setServoPin] = useState(data?.servoPin || "");
+  const [angle, setAngle] = useState(data?.angle || "");
+
+  const handleChange = (key, val) => {
+    // if (data.onChange) data.onChange(key, val);
   };
 
-  const handleDelete = () => {
-    if (data.onDelete) data.onDelete(parseFloat(id));
-  };
+  const stopEvent = (e) => e.stopPropagation();
+
+  const primaryColor = "#2563eb"; // Blue
+  const borderColor = "#1e3a8a"; // Dark Blue
 
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        borderRadius: "16px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        border: `2px solid ${selected ? "#2563eb" : "#e5e7eb"}`, // Blue border for Servo
-        padding: "12px",
-        width: "256px",
-        minHeight: "180px",
-        position: "relative",
-      }}
+    <NodeContainer
+      selected={selected}
+      primaryColor={primaryColor}
+      borderColor={borderColor}
+      minWidth={230}
+      minHeight={150}
     >
-      {/* Delete Button */}
-      <button
-        onClick={handleDelete}
-        style={{
-          position: "absolute",
-          top: "8px",
-          right: "8px",
-          width: "24px",
-          height: "24px",
-          borderRadius: "50%",
-          backgroundColor: "#ef4444",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "14px",
-          fontWeight: "bold",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-          transition: "all 0.2s ease",
-          zIndex: 10,
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.backgroundColor = "#dc2626";
-          e.target.style.transform = "scale(1.1)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.backgroundColor = "#ef4444";
-          e.target.style.transform = "scale(1)";
-        }}
-        title="Delete node"
-      >
-        ×
-      </button>
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
 
-      {/* Title */}
-      <h3
-        style={{
-          textAlign: "center",
-          fontWeight: "bold",
-          color: "#2563eb",
-          marginBottom: "8px",
-          fontSize: "16px",
-          marginRight: "32px",
-        }}
-      >
-        Servo Motor
-      </h3>
+      <NodeHeader title="Servo Motor" color={primaryColor} />
 
-      {/* Pins Section */}
-      <div style={{ marginBottom: "12px" }}>
-        <h4
-          style={{
-            fontSize: "14px",
-            fontWeight: "600",
-            color: "#374151",
-            marginBottom: "4px",
-          }}
-        >
-          Pins
-        </h4>
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <label style={{ fontSize: "12px", color: "#6b7280" }}>
-            Servo Pin
-          </label>
+      <NodeBody>
+        {/* Servo Pin */}
+        <div>
+          Servo Pin{" "}
           <PinSelect
-            value={data.servoPin || ""}
-            onChange={(val) => handleDataChange("servoPin", val)}
+            value={servoPin}
+            onChange={(val) => {
+              setServoPin(val);
+              handleChange("servoPin", val);
+            }}
             availablePins={data.availablePins}
             pwmPins={data.pwmPins}
-            selectStyle={{ width: "100%" }}
+            selectStyle={{
+              background: "#111",
+              border: "1px solid #333",
+              borderRadius: 8,
+              color: "#fff",
+              width: 80,
+              height: 28,
+              marginLeft: 8,
+              outline: "none",
+            }}
+            onPointerDown={stopEvent}
+            onMouseDown={stopEvent}
           />
         </div>
-      </div>
 
-      {/* Variables Section */}
-      <div>
-        <h4
+        {/* Angle Input */}
+        <div
           style={{
-            fontSize: "14px",
-            fontWeight: "600",
-            color: "#374151",
-            marginBottom: "4px",
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
           }}
         >
-          Variables
-        </h4>
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <label style={{ fontSize: "12px", color: "#6b7280" }}>Angle</label>
+          Angle{" "}
           <input
             type="number"
             min="0"
             max="180"
-            value={data.angle || ""}
-            onChange={(e) => handleDataChange("angle", e.target.value)}
+            value={angle}
             placeholder="0 - 180°"
+            onChange={(e) => {
+              setAngle(e.target.value);
+              handleChange("angle", e.target.value);
+            }}
+            onPointerDown={stopEvent}
+            onMouseDown={stopEvent}
             style={{
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              padding: "4px 8px",
-              fontSize: "14px",
+              background: "#111",
+              border: "1px solid #333",
+              borderRadius: 8,
+              color: "#60a5fa",
+              width: 80,
+              height: 28,
+              textAlign: "center",
+              marginLeft: 8,
+              outline: "none",
+            }}
+          />
+          <Handle
+            type="source"
+            position={Position.Right}
+            id="output"
+            style={{
+              background: primaryColor,
+              width: 10,
+              height: 10,
+              right: -20,
+              top: "50%",
+              transform: "translateY(-50%)",
             }}
           />
         </div>
-      </div>
+      </NodeBody>
 
-      {/* Handles */}
-      <Handle
-        type="target"
-        position={Position.Left}
-        id="input"
-        style={{ background: "#2563eb", width: "8px", height: "8px" }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="output"
-        style={{ background: "#2563eb", width: "8px", height: "8px" }}
-      />
-    </div>
+      <StandardHandles primaryColor={primaryColor} />
+    </NodeContainer>
   );
 };
 
