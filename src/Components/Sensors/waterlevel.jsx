@@ -1,141 +1,112 @@
-import React from "react";
+import React, { useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import PinSelect from "../common/PinSelect";
+import DeleteButton from "../common/DeleteButton";
+import NodeContainer from "../common/NodeContainer";
+import NodeHeader from "../common/NodeHeader";
+import NodeBody from "../common/NodeBody";
+import StandardHandles from "../common/StandardHandles";
 
-const WaterLevelSensorNode = ({ data, selected, id }) => {
+export default function WaterLevelSensorNode({ data, selected, id }) {
+  const [form, setForm] = useState({
+    outPin: data?.outPin || "",
+    irValue: data?.irValue || "",
+  });
+
   const handleDataChange = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
     if (data.onChange) data.onChange(key, value);
   };
 
-  const handleDelete = () => {
-    if (data.onDelete) data.onDelete(parseFloat(id));
-  };
+  const stopEvent = (e) => e.stopPropagation();
+
+  const primaryColor = "#f97316";
+  const borderColor = "#7c2d12";
 
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        borderRadius: "16px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        border: `2px solid ${selected ? "#43a047" : "#e5e7eb"}`,
-        padding: "12px",
-        width: "256px",
-        minHeight: "140px",
-        position: "relative",
-      }}
+    <NodeContainer
+      selected={selected}
+      primaryColor={primaryColor}
+      borderColor={borderColor}
+      minWidth={230}
+      minHeight={150}
     >
-      {/* Delete Button */}
-      <button
-        onClick={handleDelete}
-        style={{
-          position: "absolute",
-          top: "8px",
-          right: "8px",
-          width: "24px",
-          height: "24px",
-          borderRadius: "50%",
-          backgroundColor: "#ef4444",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "14px",
-          fontWeight: "bold",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-          transition: "all 0.2s ease",
-          zIndex: 10,
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.backgroundColor = "#dc2626";
-          e.target.style.transform = "scale(1.1)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.backgroundColor = "#ef4444";
-          e.target.style.transform = "scale(1)";
-        }}
-        title="Delete node"
-      >
-        ×
-      </button>
+      <DeleteButton onDelete={data?.onDelete} nodeId={id} />
 
-      <h3
-        style={{
-          textAlign: "center",
-          fontWeight: "bold",
-          color: "#43a047",
-          marginBottom: "8px",
-          fontSize: "16px",
-          marginRight: "32px",
-        }}
-      >
-        Water Level Sensor
-      </h3>
+      <NodeHeader title="Water Level Sensor" color={primaryColor} />
 
-      {/* Variable Section */}
-      <div>
-        <h4
-          style={{
-            fontSize: "14px",
-            fontWeight: "600",
-            color: "#374151",
-            marginBottom: "4px",
-          }}
-        >
-          Variable
-        </h4>
-        <input
-          type="text"
-          value={data.waterLevel || ""}
-          onChange={(e) => handleDataChange("waterLevel", e.target.value)}
-          placeholder="Water level"
-          style={{
-            border: "1px solid #d1d5db",
-            borderRadius: "4px",
-            padding: "4px 8px",
-            fontSize: "14px",
-          }}
-        />
-      </div>
-      {/* Pins Section */}
-      <div style={{ marginBottom: "12px" }}>
-        <h4
-          style={{
-            fontSize: "14px",
-            fontWeight: "600",
-            color: "#374151",
-            marginBottom: "4px",
-          }}
-        >
-          Pins
-        </h4>
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+      <NodeBody>
+        {/* OUT Pin */}
+        <div>
+          OUT Pin{" "}
           <PinSelect
-            value={data.pin || ""}
-            onChange={(val) => handleDataChange("pin", val)}
+            value={form.outPin}
+            onChange={(val) => handleDataChange("outPin", val)}
             availablePins={data.availablePins}
             pwmPins={data.pwmPins}
-            selectStyle={{ width: "100%" }}
+            selectStyle={{
+              background: "#111",
+              border: "1px solid #333",
+              borderRadius: 8,
+              color: "#fff",
+              width: 80,
+              height: 28,
+              marginLeft: 8,
+              outline: "none",
+            }}
+            onPointerDown={stopEvent}
+            onMouseDown={stopEvent}
           />
         </div>
-      </div>
 
-      {/* Handles */}
-      <Handle
-        type="target"
-        position={Position.Left}
-        id="input"
-        style={{ background: "#43a047", width: "8px", height: "8px" }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="output"
-        style={{ background: "#43a047", width: "8px", height: "8px" }}
-      />
-    </div>
+        {/* IR Value */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
+          }}
+        >
+          IR Value{" "}
+          <select
+            value={form.irValue}
+            onChange={(e) => handleDataChange("irValue", e.target.value)}
+            onPointerDown={stopEvent}
+            onMouseDown={stopEvent}
+            style={{
+              background: "#111",
+              border: "1px solid #333",
+              borderRadius: 8,
+              color: "#f97316",
+              width: 90,
+              height: 28,
+              textAlign: "center",
+              marginLeft: 8,
+              outline: "none",
+            }}
+          >
+            <option value="">Select</option>
+            <option value="HIGH">HIGH</option>
+            <option value="LOW">LOW</option>
+          </select>
+
+          <Handle
+            type="source"
+            position={Position.Right}
+            id="output"
+            style={{
+              background: "#f97316",
+              width: 10,
+              height: 10,
+              right: -20,
+              top: "50%",
+              transform: "translateY(-50%)",
+            }}
+          />
+        </div>
+      </NodeBody>
+
+      <StandardHandles primaryColor={primaryColor} />
+    </NodeContainer>
   );
-};
-
-export default WaterLevelSensorNode;
+}
