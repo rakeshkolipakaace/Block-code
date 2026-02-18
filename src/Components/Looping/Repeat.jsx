@@ -8,6 +8,10 @@ const RepeatBlock = ({ data, selected, id }) => {
   const [times, setTimes] = useState(data.times || 1);
 
   const handleDataChange = (key, value) => {
+    // if (data.onChange) data.onChange(key, value);
+  };
+
+  const handleBlur = (key, value) => {
     if (data.onChange) data.onChange(key, value);
   };
 
@@ -35,12 +39,14 @@ const RepeatBlock = ({ data, selected, id }) => {
       <div>
         times
         <input
+          className="nodrag"
           type="number"
           value={times}
           onChange={(e) => {
             setTimes(e.target.value);
             handleDataChange("times", e.target.value);
           }}
+          onBlur={(e) => handleBlur("times", e.target.value)}
           onPointerDown={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
           style={{
