@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
+import { applyEdgeChanges, addEdge, ReactFlowProvider } from "@xyflow/react";
 import Sidebar from "./Components/Sidebar";
 import BlockCanvas from "./Components/BlockCanvas";
 import Navbar from "./Components/Navigation";
@@ -7,8 +8,17 @@ import Codegen from "./Components/Codegen";
 const App = () => {
   const [blocks, setBlocks] = useState([]);
   const [selectedBlock, setSelectedBlock] = useState(null);
+  const [edges, setEdges] = useState([]);
 
-  const addBlock = (type, data = {}) => {
+  const onEdgesChange = useCallback((changes) => {
+    setEdges((eds) => applyEdgeChanges(changes, eds));
+  }, []);
+
+  const onConnect = useCallback((params) => {
+    setEdges((eds) => addEdge(params, eds));
+  }, []);
+
+  const addBlock = useCallback((type, data = {}) => {
     console.log("Adding block:", type, data); // Debug log
     const newBlock = {
       id: Date.now() + Math.random(),
@@ -18,35 +28,35 @@ const App = () => {
     };
     console.log("New block created:", newBlock); // Debug log
     setBlocks((prev) => [...prev, newBlock]);
-  };
+  }, [blocks.length]);
 
-  const updateBlockData = (blockId, newData) => {
+  const updateBlockData = useCallback((blockId, newData) => {
     setBlocks((prev) =>
       prev.map((block) =>
         block.id === blockId
           ? {
-              ...block,
-              data: { ...block.data, ...newData },
-              // Update position if it's provided in newData
-              ...(newData.position && { position: newData.position }),
-            }
+            ...block,
+            data: { ...block.data, ...newData },
+            // Update position if it's provided in newData
+            ...(newData.position && { position: newData.position }),
+          }
           : block
       )
     );
-  };
+  }, []);
 
-  const selectBlock = (blockId) => {
+  const selectBlock = useCallback((blockId) => {
     setSelectedBlock(blockId);
-  };
+  }, []);
 
-  const deleteBlock = (blockId) => {
+  const deleteBlock = useCallback((blockId) => {
     console.log("Deleting block:", blockId); // Debug log
     setBlocks((prev) => prev.filter((block) => block.id !== blockId));
     // Clear selection if the deleted block was selected
     if (selectedBlock === blockId) {
       setSelectedBlock(null);
     }
-  };
+  }, [selectedBlock]);
 
   return (
     <>
@@ -65,13 +75,18 @@ const App = () => {
             background: "#020617",
           }}
         >
-          <BlockCanvas
-            blocks={blocks}
-            selectedBlock={selectedBlock}
-            onUpdateBlockData={updateBlockData}
-            onSelectBlock={selectBlock}
-            onDeleteBlock={deleteBlock}
-          />
+          <ReactFlowProvider>
+            <BlockCanvas
+              blocks={blocks}
+              edges={edges}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              selectedBlock={selectedBlock}
+              onUpdateBlockData={updateBlockData}
+              onSelectBlock={selectBlock}
+              onDeleteBlock={deleteBlock}
+            />
+          </ReactFlowProvider>
         </div>
 
         {/* RIGHT CODEGEN */}
@@ -83,7 +98,7 @@ const App = () => {
             background: "#020617",
           }}
         >
-          <Codegen blocks={blocks} />
+          <Codegen blocks={blocks} edges={edges} />
         </div>
       </div>
     </>
