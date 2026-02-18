@@ -5,7 +5,6 @@ import {
   Controls,
   useNodesState,
   useEdgesState,
-  ReactFlowProvider,
   useReactFlow,
   ReactFlow,
 } from "@xyflow/react";
@@ -153,159 +152,163 @@ const nodeTypes = {
 
 const FlowComponent = ({
   blocks,
+  edges,
+  onEdgesChange,
+  onConnect,
   selectedBlock,
   onUpdateBlockData,
   onSelectBlock,
   onDeleteBlock,
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const reactFlowInstance = useReactFlow();
+  const handleUpdateRef = React.useRef(onUpdateBlockData);
+  const nodeChangeHandlers = React.useRef({});
+  const nodeDeleteHandlers = React.useRef({});
 
-  // Convert blocks to ReactFlow nodes
+  // Keep ref updated
+  useEffect(() => {
+    handleUpdateRef.current = onUpdateBlockData;
+  }, [onUpdateBlockData]);
+
+  // Convert blocks to ReactFlow nodes with memoization to prevent remounts
   useEffect(() => {
     const usedPinsGlobal = new Set();
     blocks.forEach((blk) => {
       extractPinsFromData(blk.data).forEach((p) => usedPinsGlobal.add(p));
     });
 
-    const reactFlowNodes = blocks.map((block) => {
-      let type = "default";
+    setNodes((prevNodes) => {
+      // Create a map of existing nodes for quick lookup
+      const prevNodesMap = new Map(prevNodes.map((n) => [n.id, n]));
 
-      switch (block.type) {
-        case "ultrasonic":
-          type = "ultrasonicSensor";
-          break;
-        case "dht11":
-          type = "dht11Sensor";
-          break;
-        case "ldr":
-          type = "ldrSensor";
-          break;
-        case "ir":
-          type = "irSensor";
-          break;
-        case "soilMoisture":
-          type = "soilMoistureSensor";
-          break;
-        case "waterLevel":
-          type = "waterLevelSensor";
-          break;
-        case "buzzer":
-          type = "buzzer";
-          break;
-        case "pwmLed":
-          type = "pwmLed";
-          break;
-        case "rgbLed":
-          type = "rgbLed";
-          break;
-        case "relay":
-          type = "relay";
-          break;
-        case "lcd":
-          type = "lcd16x2";
-          break;
-        case "servoMotor":
-          type = "servoMotor";
-          break;
-        case "pushButton":
-          type = "pushButton";
-          break;
-        // looping
-        case "break":
-          type = "break";
-          break;
-        case "repeat":
-          type = "repeat";
-          break;
-        case "forever":
-          type = "forever";
-          break;
-        case "whileLoop":
-          type = "whileLoop";
-          break;
-        case "forLoop":
-          type = "forLoop";
-          break;
-        // condition
-        case "ifCond":
-          type = "ifCond";
-          break;
-        case "ifElse":
-          type = "ifElse";
-          break;
-        // gpio
-        case "gpioPin":
-          type = "gpioPin";
-          break;
-        case "gpioPinWrite":
-          type = "gpioPinWrite";
-          break;
-        case "gpioPinRead":
-          type = "gpioPinRead";
-          break;
-        case "adc":
-          type = "adc";
-          break;
-        case "gpioPwm":
-          type = "gpioPwm";
-          break;
-        // display
-        case "oled13":
-          type = "oled13";
-          break;
-        case "lcd16x2":
-          type = "lcd16x2";
-          break;
-        // general
-        case "sleep":
-          type = "sleep";
-          break;
-        case "print":
-          type = "print";
-          break;
-        case "variable":
-          type = "variable";
-          break;
+      let hasChanges = false;
 
-        default:
-          type = "default";
-      }
+      const newNodes = blocks.map((block) => {
+        let type = "default";
+        // Type mapping logic matches existing switch statement
+        switch (block.type) {
+          case "ultrasonic": type = "ultrasonicSensor"; break;
+          case "dht11": type = "dht11Sensor"; break;
+          case "ldr": type = "ldrSensor"; break;
+          case "ir": type = "irSensor"; break;
+          case "soilMoisture": type = "soilMoistureSensor"; break;
+          case "waterLevel": type = "waterLevelSensor"; break;
+          case "buzzer": type = "buzzer"; break;
+          case "pwmLed": type = "pwmLed"; break;
+          case "rgbLed": type = "rgbLed"; break;
+          case "relay": type = "relay"; break;
+          case "lcd": type = "lcd16x2"; break;
+          case "servoMotor": type = "servoMotor"; break;
+          case "pushButton": type = "pushButton"; break;
+          case "break": type = "break"; break;
+          case "repeat": type = "repeat"; break;
+          case "forever": type = "forever"; break;
+          case "whileLoop": type = "whileLoop"; break;
+          case "forLoop": type = "forLoop"; break;
+          case "ifCond": type = "ifCond"; break;
+          case "ifElse": type = "ifElse"; break;
+          case "gpioPin": type = "gpioPin"; break;
+          case "gpioPinWrite": type = "gpioPinWrite"; break;
+          case "gpioPinRead": type = "gpioPinRead"; break;
+          case "adc": type = "adc"; break;
+          case "gpioPwm": type = "gpioPwm"; break;
+          case "oled13": type = "oled13"; break;
+          case "lcd16x2": type = "lcd16x2"; break;
+          case "sleep": type = "sleep"; break;
+          case "print": type = "print"; break;
+          case "variable": type = "variable"; break;
+          default: type = "default";
+        }
 
-      // compute available pins for this node: allow its own selected pins plus others not used
-      const thisPins = new Set(extractPinsFromData(block.data));
-      const availablePins = ALL_PINS.filter(
-        (p) => !usedPinsGlobal.has(p) || thisPins.has(p)
-      );
+        const thisPins = new Set(extractPinsFromData(block.data));
+        const availablePins = ALL_PINS.filter(
+          (p) => !usedPinsGlobal.has(p) || thisPins.has(p)
+        );
 
-      return {
-        id: block.id.toString(),
-        type,
-        position: block.position,
-        data: {
+        // Stabilize handlers
+        const onChangeHandler = (() => {
+          if (!nodeChangeHandlers.current[block.id]) {
+            nodeChangeHandlers.current[block.id] = (key, value) => {
+              handleUpdateRef.current(block.id, { [key]: value });
+            };
+          }
+          return nodeChangeHandlers.current[block.id];
+        })();
+
+        const onDeleteHandler = (() => {
+          if (!nodeDeleteHandlers.current[block.id]) {
+            nodeDeleteHandlers.current[block.id] = (nodeId) => {
+              onDeleteBlock(nodeId);
+            };
+          }
+          return nodeDeleteHandlers.current[block.id];
+        })();
+
+        const nodeId = block.id.toString();
+        const existingNode = prevNodesMap.get(nodeId);
+
+        // New node data object
+        const newData = {
           ...block.data,
           availablePins,
           pwmPins: PWM_PINS,
-          onChange: (key, value) => {
-            onUpdateBlockData(block.id, { [key]: value });
-          },
-          onDelete: (nodeId) => {
-            onDeleteBlock(nodeId);
-          },
-        },
-        selected: selectedBlock === block.id,
-        draggable: true,
-      };
-    });
+          onChange: onChangeHandler,
+          onDelete: onDeleteHandler, // refs are stable
+        };
 
-    setNodes(reactFlowNodes);
+        // Helper to compare arrays (availablePins)
+        const arraysEqual = (a, b) => {
+          if (a === b) return true;
+          if (!a || !b) return false;
+          if (a.length !== b.length) return false;
+          for (let i = 0; i < a.length; i++) {
+            if (a[i] !== b[i]) return false;
+          }
+          return true;
+        };
+
+        // Reuse existing node if nothing substantial changed
+        if (existingNode) {
+          const prevData = existingNode.data;
+          const pinsChanged = !arraysEqual(prevData.availablePins, newData.availablePins);
+
+          // Check if specific fields changed.
+          const dataChanged = Object.keys(block.data).some(
+            key => block.data[key] !== prevData[key]
+          );
+
+          if (!pinsChanged && !dataChanged &&
+            existingNode.type === type &&
+            existingNode.position.x === block.position.x &&
+            existingNode.position.y === block.position.y &&
+            existingNode.selected === (selectedBlock === block.id)
+          ) {
+            return existingNode;
+          }
+        }
+
+        hasChanges = true;
+
+        return {
+          id: nodeId,
+          type,
+          position: block.position,
+          data: newData,
+          selected: selectedBlock === block.id,
+          draggable: true,
+        };
+      });
+
+      if (!hasChanges && newNodes.length === prevNodes.length) {
+        return prevNodes;
+      }
+
+      return newNodes;
+    });
   }, [blocks, selectedBlock, onUpdateBlockData, onDeleteBlock]);
 
-  const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
+
 
   const onNodeClick = useCallback(
     (event, node) => onSelectBlock(parseFloat(node.id)),
@@ -352,6 +355,9 @@ const FlowComponent = ({
 
 const BlockCanvas = ({
   blocks,
+  edges,
+  onEdgesChange,
+  onConnect,
   selectedBlock,
   onUpdateBlockData,
   onSelectBlock,
@@ -359,15 +365,16 @@ const BlockCanvas = ({
 }) => {
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      <ReactFlowProvider>
-        <FlowComponent
-          blocks={blocks}
-          selectedBlock={selectedBlock}
-          onUpdateBlockData={onUpdateBlockData}
-          onSelectBlock={onSelectBlock}
-          onDeleteBlock={onDeleteBlock}
-        />
-      </ReactFlowProvider>
+      <FlowComponent
+        blocks={blocks}
+        edges={edges}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        selectedBlock={selectedBlock}
+        onUpdateBlockData={onUpdateBlockData}
+        onSelectBlock={onSelectBlock}
+        onDeleteBlock={onDeleteBlock}
+      />
     </div>
   );
 };
