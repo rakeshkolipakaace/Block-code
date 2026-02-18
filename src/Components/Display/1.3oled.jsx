@@ -19,6 +19,16 @@ export default function OledDisplayNode({ data, selected, id }) {
 
   const handleDataChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+    // if (data.onChange) data.onChange(key, value);
+  };
+
+  const handleImmediateChange = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    if (data.onChange) data.onChange(key, value);
+  };
+
+  const handleBlur = (key, value) => {
+    if (data.onChange) data.onChange(key, value);
   };
 
   const stopEvent = (e) => e.stopPropagation();
@@ -44,8 +54,9 @@ export default function OledDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>Port:</span>
           <select
+            className="nodrag"
             value={form.port}
-            onChange={(e) => handleDataChange("port", e.target.value)}
+            onChange={(e) => handleImmediateChange("port", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           >
@@ -57,9 +68,11 @@ export default function OledDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>SCK pin:</span>
           <input
+            className="nodrag"
             type="text"
             value={form.sckPin}
             onChange={(e) => handleDataChange("sckPin", e.target.value)}
+            onBlur={(e) => handleBlur("sckPin", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           />
@@ -68,9 +81,11 @@ export default function OledDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>SDA pin:</span>
           <input
+            className="nodrag"
             type="text"
             value={form.sdaPin}
             onChange={(e) => handleDataChange("sdaPin", e.target.value)}
+            onBlur={(e) => handleBlur("sdaPin", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           />
@@ -79,22 +94,25 @@ export default function OledDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>Rotate:</span>
           <select
+            className="nodrag"
             value={form.rotate}
-            onChange={(e) => handleDataChange("rotate", e.target.value)}
+            onChange={(e) => handleImmediateChange("rotate", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           >
             <option value="0">0</option>
-            <option value="90">180</option>
+            <option value="180">180</option>
           </select>
         </div>
 
         <div style={rowStyle}>
           <span style={labelStyle}>Top:</span>
           <input
+            className="nodrag"
             type="text"
             value={form.top}
             onChange={(e) => handleDataChange("top", e.target.value)}
+            onBlur={(e) => handleBlur("top", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           />
@@ -103,9 +121,11 @@ export default function OledDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>Left:</span>
           <input
+            className="nodrag"
             type="text"
             value={form.left}
             onChange={(e) => handleDataChange("left", e.target.value)}
+            onBlur={(e) => handleBlur("left", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           />
@@ -114,9 +134,11 @@ export default function OledDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>Text:</span>
           <input
+            className="nodrag"
             type="text"
             value={form.text}
             onChange={(e) => handleDataChange("text", e.target.value)}
+            onBlur={(e) => handleBlur("text", e.target.value)}
             onPointerDown={stopEvent}
             style={{ ...inputStyle, color: "#9333ea" }}
           />
