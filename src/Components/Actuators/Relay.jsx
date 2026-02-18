@@ -17,6 +17,10 @@ const RelayBlock = ({ data, selected, id }) => {
     if (data.onChange) data.onChange(key, val);
   };
 
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
+  };
+
   const primaryColor = "#f59e0b";
   const borderColor = "#1e293b";
 
@@ -65,6 +69,7 @@ const RelayBlock = ({ data, selected, id }) => {
         <div>
           NO (High/Low){" "}
           <select
+            className="nodrag"
             value={no}
             onChange={(e) => {
               setNo(e.target.value);
@@ -92,6 +97,7 @@ const RelayBlock = ({ data, selected, id }) => {
         <div>
           NC (High/Low){" "}
           <select
+            className="nodrag"
             value={nc}
             onChange={(e) => {
               setNc(e.target.value);
