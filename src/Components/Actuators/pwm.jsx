@@ -16,6 +16,10 @@ const PWMLEDBlock = ({ data, selected, id }) => {
     if (data.onChange) data.onChange(key, val);
   };
 
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
+  };
+
   const primaryColor = "#10b981";
   const borderColor = "#222233";
 
@@ -68,8 +72,9 @@ const PWMLEDBlock = ({ data, selected, id }) => {
             position: "relative",
           }}
         >
-         Value{" "}
+          Value{" "}
           <select
+            className="nodrag"
             value={value}
             onChange={(e) => {
               setValue(e.target.value);
@@ -92,7 +97,7 @@ const PWMLEDBlock = ({ data, selected, id }) => {
             <option value="LOW">LOW</option>
           </select>
           {/* Handle beside slider */}
-         
+
         </div>
       </NodeBody>
 
