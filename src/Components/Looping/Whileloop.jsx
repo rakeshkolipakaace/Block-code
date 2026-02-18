@@ -10,6 +10,10 @@ export default function WhileLoopBlock({ data, selected, id }) {
   const [condition, setCondition] = useState(data?.condition || "True");
 
   const handleChange = (key, value) => {
+    // data?.onChange && data.onChange(key, value);
+  };
+
+  const handleBlur = (key, value) => {
     data?.onChange && data.onChange(key, value);
   };
 
@@ -35,11 +39,13 @@ export default function WhileLoopBlock({ data, selected, id }) {
           Condition
         </label>
         <input
+          className="nodrag"
           value={condition}
           onChange={(e) => {
             setCondition(e.target.value);
             handleChange("condition", e.target.value);
           }}
+          onBlur={(e) => handleBlur("condition", e.target.value)}
           onPointerDown={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
           style={{
