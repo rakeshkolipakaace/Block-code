@@ -11,6 +11,10 @@ export default function ForLoopBlock({ data, selected, id }) {
   const [range, setRange] = useState(data?.range || "range(10)");
 
   const handleChange = (key, value) => {
+    // data?.onChange && data.onChange(key, value);
+  };
+
+  const handleBlur = (key, value) => {
     data?.onChange && data.onChange(key, value);
   };
 
@@ -38,11 +42,13 @@ export default function ForLoopBlock({ data, selected, id }) {
             Variable
           </label>
           <input
+            className="nodrag"
             value={variable}
             onChange={(e) => {
               setVariable(e.target.value);
               handleChange("variable", e.target.value);
             }}
+            onBlur={(e) => handleBlur("variable", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
@@ -66,11 +72,13 @@ export default function ForLoopBlock({ data, selected, id }) {
             Range
           </label>
           <input
+            className="nodrag"
             value={range}
             onChange={(e) => {
               setRange(e.target.value);
               handleChange("range", e.target.value);
             }}
+            onBlur={(e) => handleBlur("range", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
