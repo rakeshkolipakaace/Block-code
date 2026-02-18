@@ -14,7 +14,10 @@ const VariableNode = ({ data, selected, id }) => {
 
   const handleDataChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
-    // if (data.onChange) data.onChange(key, value);
+  };
+
+  const handleBlur = (key, value) => {
+    if (data.onChange) data.onChange(key, value);
   };
 
   const primaryColor = "#eab308";
@@ -41,8 +44,10 @@ const VariableNode = ({ data, selected, id }) => {
             Variable
           </label>
           <input
+            className="nodrag"
             value={form.variable}
             onChange={(e) => handleDataChange("variable", e.target.value)}
+            onBlur={(e) => handleBlur("variable", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
@@ -65,8 +70,10 @@ const VariableNode = ({ data, selected, id }) => {
             Value
           </label>
           <input
+            className="nodrag"
             value={form.value}
             onChange={(e) => handleDataChange("value", e.target.value)}
+            onBlur={(e) => handleBlur("value", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
