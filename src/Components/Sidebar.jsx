@@ -150,8 +150,8 @@ const Sidebar = ({ onAddBlock }) => {
     } else if (subItem === "1.3 OLED") {
       onAddBlock("oled13", {
         port: "1",
-        sck: "47",
-        sda: "48",
+        sckPin: "47",
+        sdaPin: "48",
         rotate: 0,
         top: 0,
         left: 0,
@@ -159,8 +159,8 @@ const Sidebar = ({ onAddBlock }) => {
       });
     } else if (subItem === "LCD 16*2") {
       onAddBlock("lcd16x2", {
-        sda: "47",
-        scl: "48",
+        sdaPin: "47",
+        sclPin: "48",
         address: "0x27",
         text: "Hello world",
         row: 0,
