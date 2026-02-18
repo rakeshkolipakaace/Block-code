@@ -8,8 +8,18 @@ import NodeBody from "../common/NodeBody";
 import StandardHandles from "../common/StandardHandles";
 
 const PinReadBlock = ({ data, selected, id }) => {
-  const [pin, setPin] = useState("4");
-  const [store, setStore] = useState("value");
+  const [form, setForm] = useState({
+    pin: data?.pin || "4",
+    store: data?.store || "value",
+  });
+
+  const handleChange = (key, val) => {
+    setForm((prev) => ({ ...prev, [key]: val }));
+  };
+
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
+  };
 
   const primaryColor = "#4266c0";
   const borderColor = "#222233";
@@ -36,9 +46,11 @@ const PinReadBlock = ({ data, selected, id }) => {
         <div>
           Pin{" "}
           <input
+            className="nodrag"
             type="text"
-            value={pin}
-            onChange={(e) => setPin(e.target.value)}
+            value={form.pin}
+            onChange={(e) => handleChange("pin", e.target.value)}
+            onBlur={(e) => handleBlur("pin", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
@@ -64,9 +76,11 @@ const PinReadBlock = ({ data, selected, id }) => {
         >
           Store In{" "}
           <input
+            className="nodrag"
             type="text"
-            value={store}
-            onChange={(e) => setStore(e.target.value)}
+            value={form.store}
+            onChange={(e) => handleChange("store", e.target.value)}
+            onBlur={(e) => handleBlur("store", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
