@@ -18,6 +18,16 @@ export default function LcdDisplayNode({ data, selected, id }) {
 
   const handleDataChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+    // if (data.onChange) data.onChange(key, value);
+  };
+
+  const handleImmediateChange = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    if (data.onChange) data.onChange(key, value);
+  };
+
+  const handleBlur = (key, value) => {
+    if (data.onChange) data.onChange(key, value);
   };
 
   const stopEvent = (e) => e.stopPropagation();
@@ -43,9 +53,11 @@ export default function LcdDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>SDA Pin:</span>
           <input
+            className="nodrag"
             type="text"
             value={form.sdaPin}
             onChange={(e) => handleDataChange("sdaPin", e.target.value)}
+            onBlur={(e) => handleBlur("sdaPin", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           />
@@ -54,9 +66,11 @@ export default function LcdDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>SCL Pin:</span>
           <input
+            className="nodrag"
             type="text"
             value={form.sclPin}
             onChange={(e) => handleDataChange("sclPin", e.target.value)}
+            onBlur={(e) => handleBlur("sclPin", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           />
@@ -65,8 +79,9 @@ export default function LcdDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>Address:</span>
           <select
+            className="nodrag"
             value={form.address}
-            onChange={(e) => handleDataChange("address", e.target.value)}
+            onChange={(e) => handleImmediateChange("address", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           >
@@ -78,9 +93,11 @@ export default function LcdDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>Print Text:</span>
           <input
+            className="nodrag"
             type="text"
             value={form.printText}
             onChange={(e) => handleDataChange("printText", e.target.value)}
+            onBlur={(e) => handleBlur("printText", e.target.value)}
             onPointerDown={stopEvent}
             style={{ ...inputStyle, color: "#9333ea" }}
           />
@@ -89,8 +106,9 @@ export default function LcdDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>Row:</span>
           <select
+            className="nodrag"
             value={form.row}
-            onChange={(e) => handleDataChange("row", e.target.value)}
+            onChange={(e) => handleImmediateChange("row", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           >
@@ -102,8 +120,9 @@ export default function LcdDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>Column:</span>
           <select
+            className="nodrag"
             value={form.column}
-            onChange={(e) => handleDataChange("column", e.target.value)}
+            onChange={(e) => handleImmediateChange("column", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           >
@@ -117,8 +136,9 @@ export default function LcdDisplayNode({ data, selected, id }) {
         <div style={rowStyle}>
           <span style={labelStyle}>Backlight:</span>
           <select
+            className="nodrag"
             value={form.backlight}
-            onChange={(e) => handleDataChange("backlight", e.target.value)}
+            onChange={(e) => handleImmediateChange("backlight", e.target.value)}
             onPointerDown={stopEvent}
             style={inputStyle}
           >
