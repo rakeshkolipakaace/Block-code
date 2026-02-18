@@ -8,8 +8,12 @@ import NodeBody from "../common/NodeBody";
 import StandardHandles from "../common/StandardHandles";
 
 const ADCBlock = ({ data, selected, id }) => {
-  const [pin, setPin] = useState("34");
-  const [store, setStore] = useState("value");
+  const [pin, setPin] = useState(data.pin || "34");
+  const [store, setStore] = useState(data.store || "value");
+
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
+  };
 
   const primaryColor = "#19c37d";
   const borderColor = "#222233";
@@ -32,72 +36,76 @@ const ADCBlock = ({ data, selected, id }) => {
       />
 
       <NodeBody gap={12}>
- <div>
-           Pin{" "}
-           <input
-             type="text"
-             value={pin}
-             onChange={(e) => setPin(e.target.value)}
-             onPointerDown={(e) => e.stopPropagation()}
-             onMouseDown={(e) => e.stopPropagation()}
-             style={{
-               background: "#222",
-               color: "#7da6ff",
-               borderRadius: 8,
-               border: "none",
-               width: 45,
-               height: 28,
-               textAlign: "center",
-               marginLeft: 6,
-             }}
-           />
-         </div>
- 
-         {/* Store In Field + Handle (precise alignment) */}
-         <div
-           style={{
-             display: "flex",
-             alignItems: "center",
-             position: "relative",
-           }}
-         >
-           Store In{" "}
-           <input
-             type="text"
-             value={store}
-             onChange={(e) => setStore(e.target.value)}
-             onPointerDown={(e) => e.stopPropagation()}
-             onMouseDown={(e) => e.stopPropagation()}
-             style={{
-               background: "#222",
-               color: "#00d26a",
-               borderRadius: 8,
-               border: "none",
-               width: 105,
-               height: 28,
-               textAlign: "center",
-               marginLeft: 6,
-             }}
-           />
- 
-           {/* ✅ Handle positioned exactly beside input field */}
-           <Handle
-             type="source"
-             position={Position.Right}
-             id="storeOutput"
-             style={{
-               background: "#00d26a",
-               width: 10,
-               height: 10,
-               position: "absolute",
-               right: -18, // distance from the right side of input box
-               top: "50%", // vertically centered with input field
-               transform: "translateY(-50%)",
-               border: "2px solid #fff",
-               zIndex: 5,
-             }}
-           />
-         </div>
+        <div>
+          Pin{" "}
+          <input
+            className="nodrag"
+            type="text"
+            value={pin}
+            onChange={(e) => setPin(e.target.value)}
+            onBlur={(e) => handleBlur("pin", e.target.value)}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            style={{
+              background: "#222",
+              color: "#7da6ff",
+              borderRadius: 8,
+              border: "none",
+              width: 45,
+              height: 28,
+              textAlign: "center",
+              marginLeft: 6,
+            }}
+          />
+        </div>
+
+        {/* Store In Field + Handle (precise alignment) */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
+          }}
+        >
+          Store In{" "}
+          <input
+            className="nodrag"
+            type="text"
+            value={store}
+            onChange={(e) => setStore(e.target.value)}
+            onBlur={(e) => handleBlur("store", e.target.value)}
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            style={{
+              background: "#222",
+              color: "#00d26a",
+              borderRadius: 8,
+              border: "none",
+              width: 105,
+              height: 28,
+              textAlign: "center",
+              marginLeft: 6,
+            }}
+          />
+
+          {/* ✅ Handle positioned exactly beside input field */}
+          <Handle
+            type="source"
+            position={Position.Right}
+            id="storeOutput"
+            style={{
+              background: "#00d26a",
+              width: 10,
+              height: 10,
+              position: "absolute",
+              right: -18, // distance from the right side of input box
+              top: "50%", // vertically centered with input field
+              transform: "translateY(-50%)",
+              border: "2px solid #fff",
+              zIndex: 5,
+            }}
+          />
+        </div>
       </NodeBody>
 
       <StandardHandles primaryColor="#f97316" />
