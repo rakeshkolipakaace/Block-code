@@ -4,6 +4,9 @@ import DeleteButton from "../common/DeleteButton";
 import StandardHandles from "../common/StandardHandles";
 
 export default function SleepNode({ data, selected, id }) {
+  const [form, setForm] = React.useState({
+    seconds: data?.seconds || 1,
+  });
   return (
     <div
       style={{
@@ -35,7 +38,7 @@ export default function SleepNode({ data, selected, id }) {
           width: "100%",
         }}
       >
-        <div style={{ color: "#fff", fontSize: 12 }}>ms</div>
+        <div style={{ color: "#fff", fontSize: 12 }}>sec</div>
         <input
           type="number"
           min="0"
@@ -49,13 +52,16 @@ export default function SleepNode({ data, selected, id }) {
             padding: "4px 6px",
             marginRight: 10,
           }}
-          defaultValue={data?.ms ?? 1}
-          onPointerDown={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
+          value={form.seconds}
           onChange={(e) => {
-            const v = e.target.value === "" ? "" : Number(e.target.value);
-            // data?.onChange && data.onChange("ms", v);
+            const val = e.target.value;
+            setForm((prev) => ({ ...prev, seconds: val }));
+            // if (data.onChange) data.onChange("seconds", val);
           }}
+          onBlur={(e) => {
+            if (data.onChange) data.onChange("seconds", e.target.value);
+          }}
+          className="nodrag"
         />
       </div>
 
