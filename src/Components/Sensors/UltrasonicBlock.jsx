@@ -11,7 +11,7 @@ export default function UltrasonicSensorNode({ data, selected, id }) {
     port: data?.port || "Port 1",
     triggerPin: data?.triggerPin || "",
     echoPin: data?.echoPin || "",
-    distance: data?.distance || "",
+    distance: data?.distance || "distance",
   });
 
   const handleChange = (key, value) => {
@@ -19,9 +19,18 @@ export default function UltrasonicSensorNode({ data, selected, id }) {
     // if (data.onChange) data.onChange(key, value);
   };
 
+  const handleImmediateChange = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    if (data.onChange) data.onChange(key, value);
+  };
+
+  const handleBlur = (key, value) => {
+    if (data.onChange) data.onChange(key, value);
+  };
+
   const stopEvent = (e) => e.stopPropagation();
 
-  const primaryColor = "#a855f7";
+  const primaryColor = "#16a34a";
   const borderColor = "#5b21b6";
 
   return (
@@ -41,8 +50,9 @@ export default function UltrasonicSensorNode({ data, selected, id }) {
         <div>
           Port{" "}
           <select
+            className="nodrag"
             value={form.port}
-            onChange={(e) => handleChange("port", e.target.value)}
+            onChange={(e) => handleImmediateChange("port", e.target.value)}
             onPointerDown={stopEvent}
             onMouseDown={stopEvent}
             style={{
@@ -66,9 +76,11 @@ export default function UltrasonicSensorNode({ data, selected, id }) {
         <div>
           Trigger Pin{" "}
           <input
+            className="nodrag"
             type="text"
             value={form.triggerPin}
             onChange={(e) => handleChange("triggerPin", e.target.value)}
+            onBlur={(e) => handleBlur("triggerPin", e.target.value)}
             onPointerDown={stopEvent}
             onMouseDown={stopEvent}
             style={{
@@ -80,7 +92,6 @@ export default function UltrasonicSensorNode({ data, selected, id }) {
               height: 26,
               marginLeft: 8,
               outline: "none",
-              paddingLeft: 5,
             }}
           />
         </div>
@@ -89,9 +100,11 @@ export default function UltrasonicSensorNode({ data, selected, id }) {
         <div>
           Echo Pin{" "}
           <input
+            className="nodrag"
             type="text"
             value={form.echoPin}
             onChange={(e) => handleChange("echoPin", e.target.value)}
+            onBlur={(e) => handleBlur("echoPin", e.target.value)}
             onPointerDown={stopEvent}
             onMouseDown={stopEvent}
             style={{
@@ -110,11 +123,13 @@ export default function UltrasonicSensorNode({ data, selected, id }) {
 
         {/* Distance */}
         <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
-          Distance{" "}
+          Distance{""}
           <input
+            className="nodrag"
             type="text"
             value={form.distance}
             onChange={(e) => handleChange("distance", e.target.value)}
+            onBlur={(e) => handleBlur("distance", e.target.value)}
             onPointerDown={stopEvent}
             onMouseDown={stopEvent}
             style={{
