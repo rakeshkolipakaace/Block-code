@@ -10,13 +10,21 @@ import StandardHandles from "../common/StandardHandles";
 export default function DHT11SensorNode({ data, selected, id }) {
   const [form, setForm] = useState({
     dataPin: data?.dataPin || "",
-    temperature: data?.temperature || "",
-    humidity: data?.humidity || "",
+    temperature: data?.temperature || "temperature",
+    humidity: data?.humidity || "humidity",
   });
 
   const handleChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
-    // if (data.onChange) data.onChange(key, value);
+  };
+
+  const handleImmediateChange = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    if (data.onChange) data.onChange(key, value);
+  };
+
+  const handleBlur = (key, value) => {
+    if (data.onChange) data.onChange(key, value);
   };
 
   const stopEvent = (e) => e.stopPropagation();
@@ -39,7 +47,22 @@ export default function DHT11SensorNode({ data, selected, id }) {
       <NodeBody>
         {/* Data Pin */}
         <div>
-          Data Pin <PinSelect />
+          Data Pin{" "}
+          <PinSelect
+            value={form.dataPin}
+            onChange={(val) => handleImmediateChange("dataPin", val)}
+            availablePins={data.availablePins}
+            selectStyle={{
+              background: "#111",
+              border: "1px solid #333",
+              borderRadius: 8,
+              color: "#fff",
+              width: 80,
+              height: 26,
+              marginLeft: 8,
+              outline: "none",
+            }}
+          />
         </div>
 
         {/* Temperature */}
@@ -52,9 +75,11 @@ export default function DHT11SensorNode({ data, selected, id }) {
         >
           Temperature{" "}
           <input
+            className="nodrag"
             type="text"
             value={form.temperature}
             onChange={(e) => handleChange("temperature", e.target.value)}
+            onBlur={(e) => handleBlur("temperature", e.target.value)}
             onPointerDown={stopEvent}
             onMouseDown={stopEvent}
             placeholder="temperature"
@@ -95,9 +120,11 @@ export default function DHT11SensorNode({ data, selected, id }) {
         >
           Humidity{" "}
           <input
+            className="nodrag"
             type="text"
             value={form.humidity}
             onChange={(e) => handleChange("humidity", e.target.value)}
+            onBlur={(e) => handleBlur("humidity", e.target.value)}
             onPointerDown={stopEvent}
             onMouseDown={stopEvent}
             placeholder="humidity"
