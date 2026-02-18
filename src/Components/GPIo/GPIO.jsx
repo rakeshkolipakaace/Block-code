@@ -8,8 +8,16 @@ import StandardHandles from "../common/StandardHandles";
 
 
 const GPIOPinBlock = ({ data, selected, id }) => {
-  const [pin, setPin] = useState("2");
-  const [mode, setMode] = useState("OUT");
+  const [pin, setPin] = useState(data.pin || "2");
+  const [mode, setMode] = useState(data.mode || "OUT");
+
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
+  };
+
+  const handleImmediateChange = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
+  };
 
   const primaryColor = "#19c37d";
   const borderColor = "#222233";
@@ -35,9 +43,13 @@ const GPIOPinBlock = ({ data, selected, id }) => {
         <div>
           Pin{" "}
           <input
+            className="nodrag"
             type="text"
             value={pin}
-            onChange={(e) => setPin(e.target.value)}
+            onChange={(e) => {
+              setPin(e.target.value);
+            }}
+            onBlur={(e) => handleBlur("pin", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
@@ -55,8 +67,12 @@ const GPIOPinBlock = ({ data, selected, id }) => {
         <div>
           Mode{" "}
           <select
+            className="nodrag"
             value={mode}
-            onChange={(e) => setMode(e.target.value)}
+            onChange={(e) => {
+              setMode(e.target.value);
+              handleImmediateChange("mode", e.target.value);
+            }}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
