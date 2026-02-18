@@ -23,14 +23,17 @@ const pins = [
   "A5",
 ];
 
-const PinSelect = () => {
-  const [selectedPin, setSelectedPin] = useState("");
+const PinSelect = ({ value, onChange, availablePins, selectStyle, ...props }) => {
+  const pinsToUse = availablePins && availablePins.length > 0 ? availablePins : pins;
 
   return (
     <select
-      value={selectedPin}
-      onChange={(e) => setSelectedPin(e.target.value)}
-      style={{
+      className="nodrag"
+      value={value || ""}
+      onChange={(e) => onChange && onChange(e.target.value)}
+      onPointerDown={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+      style={selectStyle || {
         background: "#111",
         color: "#fff",
         border: "1px solid #333",
@@ -38,15 +41,11 @@ const PinSelect = () => {
         height: 28,
         padding: "0 6px",
       }}
+      {...props}
     >
-      <option value="">Select pin</option>
-
-      {pins.map((pin) => (
-        <option
-          key={pin}
-          value={pin}
-          disabled={pin === selectedPin} // 🔥 disable selected pin
-        >
+      <option value="" disabled>Select pin</option>
+      {pinsToUse.map((pin) => (
+        <option key={pin} value={pin}>
           {pin}
         </option>
       ))}
