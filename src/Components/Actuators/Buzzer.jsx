@@ -9,11 +9,18 @@ import NodeBody from "../common/NodeBody";
 import StandardHandles from "../common/StandardHandles";
 
 const BuzzerNode = ({ data, selected, id }) => {
-  const [pin, setPin] = useState(data.pin || "");
-  const [output, setOutput] = useState(data.output || "LOW");
+  const [form, setForm] = useState({
+    pin: data?.pin || "",
+    output: data?.output || "LOW",
+  });
 
-  const handleChange = (key, value) => {
-    if (data.onChange) data.onChange(key, value);
+  const handleChange = (key, val) => {
+    setForm((prev) => ({ ...prev, [key]: val }));
+    if (data.onChange) data.onChange(key, val);
+  };
+
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
   };
 
   const primaryColor = "#19c37d";
@@ -41,9 +48,8 @@ const BuzzerNode = ({ data, selected, id }) => {
         <div>
           Pin{" "}
           <PinSelect
-            value={pin}
+            value={form.pin}
             onChange={(val) => {
-              setPin(val);
               handleChange("pin", val);
             }}
             availablePins={data.availablePins}
@@ -70,9 +76,9 @@ const BuzzerNode = ({ data, selected, id }) => {
         >
           Output{" "}
           <select
-            value={output}
+            className="nodrag"
+            value={form.output}
             onChange={(e) => {
-              setOutput(e.target.value);
               handleChange("output", e.target.value);
             }}
             onPointerDown={(e) => e.stopPropagation()}
@@ -93,7 +99,7 @@ const BuzzerNode = ({ data, selected, id }) => {
           </select>
 
           {/* Handle beside Output */}
-         
+
         </div>
       </NodeBody>
 
