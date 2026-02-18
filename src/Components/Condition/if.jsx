@@ -13,9 +13,13 @@ const OPERATORS = [
 ];
 
 const IfBlock = ({ data, selected, id }) => {
-  const [left, setLeft] = useState("");
-  const [right, setRight] = useState("0");
-  const [operator, setOperator] = useState(">=");
+  const [left, setLeft] = useState(data.left || "");
+  const [right, setRight] = useState(data.right || "0");
+  const [operator, setOperator] = useState(data.operator || ">=");
+
+  const handleBlur = (key, val) => {
+    if (data?.onChange) data.onChange(key, val);
+  };
 
   return (
     <div
@@ -84,9 +88,11 @@ const IfBlock = ({ data, selected, id }) => {
         }}
       >
         <input
+          className="nodrag"
           type="text"
           value={left}
           onChange={(e) => setLeft(e.target.value)}
+          onBlur={(e) => handleBlur("left", e.target.value)}
           onPointerDown={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
           style={{
@@ -102,8 +108,10 @@ const IfBlock = ({ data, selected, id }) => {
           }}
         />
         <select
+          className="nodrag"
           value={operator}
           onChange={(e) => setOperator(e.target.value)}
+          onBlur={(e) => handleBlur("operator", e.target.value)}
           onPointerDown={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
           style={{
@@ -125,9 +133,11 @@ const IfBlock = ({ data, selected, id }) => {
           ))}
         </select>
         <input
+          className="nodrag"
           type="text"
           value={right}
           onChange={(e) => setRight(e.target.value)}
+          onBlur={(e) => handleBlur("right", e.target.value)}
           onPointerDown={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
           style={{
