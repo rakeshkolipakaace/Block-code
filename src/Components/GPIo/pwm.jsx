@@ -7,9 +7,13 @@ import NodeBody from "../common/NodeBody";
 import StandardHandles from "../common/StandardHandles";
 
 const PWMBlock = ({ data, selected, id }) => {
-  const [pin, setPin] = useState("2");
-  const [frequency, setFrequency] = useState("1000");
-  const [duty, setDuty] = useState("512");
+  const [pin, setPin] = useState(data.pin || "2");
+  const [frequency, setFrequency] = useState(data.frequency || "1000");
+  const [duty, setDuty] = useState(data.duty || "512");
+
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
+  };
 
   const primaryColor = "#7b44ff";
   const borderColor = "#222233";
@@ -35,9 +39,11 @@ const PWMBlock = ({ data, selected, id }) => {
         <div>
           Pin{" "}
           <input
+            className="nodrag"
             type="text"
             value={pin}
             onChange={(e) => setPin(e.target.value)}
+            onBlur={(e) => handleBlur("pin", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
@@ -55,9 +61,11 @@ const PWMBlock = ({ data, selected, id }) => {
         <div>
           Frequency{" "}
           <input
+            className="nodrag"
             type="text"
             value={frequency}
             onChange={(e) => setFrequency(e.target.value)}
+            onBlur={(e) => handleBlur("frequency", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
@@ -75,9 +83,11 @@ const PWMBlock = ({ data, selected, id }) => {
         <div>
           Duty Cycle{" "}
           <input
+            className="nodrag"
             type="text"
             value={duty}
             onChange={(e) => setDuty(e.target.value)}
+            onBlur={(e) => handleBlur("duty", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
@@ -93,7 +103,7 @@ const PWMBlock = ({ data, selected, id }) => {
           />
         </div>
       </NodeBody>
-      <StandardHandles/>
+      <StandardHandles />
 
     </NodeContainer>
   );
