@@ -8,11 +8,23 @@ import NodeBody from "../common/NodeBody";
 import StandardHandles from "../common/StandardHandles";
 
 const LDRSensorNode = ({ data, selected, id }) => {
-  const [analogPin, setAnalogPin] = useState(data?.analogPin || "");
-  const [intensity, setIntensity] = useState(data?.intensity || "");
+  const [form, setForm] = useState({
+    analogPin: data?.analogPin || "",
+    intensity: data?.intensity || "ldr_val ",
+  });
 
   const handleChange = (key, val) => {
+    setForm((prev) => ({ ...prev, [key]: val }));
     // if (data.onChange) data.onChange(key, val);
+  };
+
+  const handleImmediateChange = (key, val) => {
+    setForm((prev) => ({ ...prev, [key]: val }));
+    if (data.onChange) data.onChange(key, val);
+  };
+
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
   };
 
   const stopEvent = (e) => e.stopPropagation();
@@ -37,10 +49,9 @@ const LDRSensorNode = ({ data, selected, id }) => {
         <div>
           Analog Pin{" "}
           <PinSelect
-            value={analogPin}
+            value={form.analogPin}
             onChange={(val) => {
-              setAnalogPin(val);
-              handleChange("analogPin", val);
+              handleImmediateChange("analogPin", val);
             }}
             availablePins={data.availablePins}
             pwmPins={data.pwmPins}
@@ -69,13 +80,14 @@ const LDRSensorNode = ({ data, selected, id }) => {
         >
           Intensity{" "}
           <input
+            className="nodrag"
             type="text"
-            value={intensity}
+            value={form.intensity}
             placeholder="Intensity"
             onChange={(e) => {
-              setIntensity(e.target.value);
               handleChange("intensity", e.target.value);
             }}
+            onBlur={(e) => handleBlur("intensity", e.target.value)}
             onPointerDown={stopEvent}
             onMouseDown={stopEvent}
             style={{
