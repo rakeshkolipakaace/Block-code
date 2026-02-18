@@ -8,11 +8,23 @@ import NodeBody from "../common/NodeBody";
 import StandardHandles from "../common/StandardHandles";
 
 const ServoMotorBlock = ({ data, selected, id }) => {
-  const [servoPin, setServoPin] = useState(data?.servoPin || "");
-  const [angle, setAngle] = useState(data?.angle || "");
+  const [form, setForm] = useState({
+    servoPin: data?.servoPin || "",
+    angle: data?.angle || "",
+  });
 
   const handleChange = (key, val) => {
+    setForm((prev) => ({ ...prev, [key]: val }));
     // if (data.onChange) data.onChange(key, val);
+  };
+
+  const handleImmediateChange = (key, val) => {
+    setForm((prev) => ({ ...prev, [key]: val }));
+    if (data.onChange) data.onChange(key, val);
+  };
+
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
   };
 
   const stopEvent = (e) => e.stopPropagation();
@@ -37,10 +49,9 @@ const ServoMotorBlock = ({ data, selected, id }) => {
         <div>
           Servo Pin{" "}
           <PinSelect
-            value={servoPin}
+            value={form.servoPin}
             onChange={(val) => {
-              setServoPin(val);
-              handleChange("servoPin", val);
+              handleImmediateChange("servoPin", val);
             }}
             availablePins={data.availablePins}
             pwmPins={data.pwmPins}
@@ -69,15 +80,16 @@ const ServoMotorBlock = ({ data, selected, id }) => {
         >
           Angle{" "}
           <input
+            className="nodrag"
             type="number"
             min="0"
             max="180"
-            value={angle}
+            value={form.angle}
             placeholder="0 - 180°"
             onChange={(e) => {
-              setAngle(e.target.value);
               handleChange("angle", e.target.value);
             }}
+            onBlur={(e) => handleBlur("angle", e.target.value)}
             onPointerDown={stopEvent}
             onMouseDown={stopEvent}
             style={{
