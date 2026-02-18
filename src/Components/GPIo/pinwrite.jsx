@@ -8,8 +8,18 @@ import StandardHandles from "../common/StandardHandles";
 
 
 const PinWriteBlock = ({ data, selected, id }) => {
-  const [pin, setPin] = useState("4");
-  const [value, setValue] = useState(1);
+  const [form, setForm] = useState({
+    pin: data?.pin || "4",
+    value: data?.value !== undefined ? data.value : 1,
+  });
+
+  const handleChange = (key, val) => {
+    setForm((prev) => ({ ...prev, [key]: val }));
+  };
+
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
+  };
 
   const primaryColor = "#ff9800";
   const borderColor = "#222233";
@@ -34,30 +44,40 @@ const PinWriteBlock = ({ data, selected, id }) => {
       <NodeBody gap={12}>
         <div>
           Pin{" "}
-          <input type="text" value={pin} onChange={e => setPin(e.target.value)}
+          Pin{" "}
+          Pin{" "}
+          <input className="nodrag" type="text" value={form.pin} onChange={e => handleChange("pin", e.target.value)} onBlur={e => handleBlur("pin", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{ background: "#222", color: "#7da6ff", borderRadius: 8, border: "none", width: 45, height: 28, textAlign: "center", marginLeft: 6 }} />
         </div>
         <div>
           Value{" "}
-          <label style={{ marginLeft: 10}}>
+          <label style={{ marginLeft: 10 }}>
             <input
+              className="nodrag"
               type="radio"
-              checked={value === 0}
-              onChange={() => setValue(0)}
-              style={{accentColor: "#fff", marginRight: 4}}
+              checked={Number(form.value) === 0}
+              onChange={() => {
+                handleChange("value", 0);
+                handleBlur("value", 0);
+              }}
+              style={{ accentColor: "#fff", marginRight: 4 }}
             /> 0
             <input
+              className="nodrag"
               type="radio"
-              checked={value === 1}
-              onChange={() => setValue(1)}
-              style={{accentColor: "#00d26a", marginLeft: 18, marginRight: 4}}
+              checked={Number(form.value) === 1}
+              onChange={() => {
+                handleChange("value", 1);
+                handleBlur("value", 1);
+              }}
+              style={{ accentColor: "#00d26a", marginLeft: 18, marginRight: 4 }}
             /> 1
           </label>
         </div>
       </NodeBody>
-      <StandardHandles/>
+      <StandardHandles />
     </NodeContainer>
   );
 };
