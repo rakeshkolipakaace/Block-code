@@ -13,8 +13,12 @@ export default function WaterLevelSensorNode({ data, selected, id }) {
     irValue: data?.irValue || "",
   });
 
-  const handleDataChange = (key, value) => {
+  const handleChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+    if (data.onChange) data.onChange(key, value);
+  };
+
+  const handleBlur = (key, value) => {
     if (data.onChange) data.onChange(key, value);
   };
 
@@ -41,7 +45,7 @@ export default function WaterLevelSensorNode({ data, selected, id }) {
           OUT Pin{" "}
           <PinSelect
             value={form.outPin}
-            onChange={(val) => handleDataChange("outPin", val)}
+            onChange={(val) => handleChange("outPin", val)}
             availablePins={data.availablePins}
             pwmPins={data.pwmPins}
             selectStyle={{
@@ -69,8 +73,9 @@ export default function WaterLevelSensorNode({ data, selected, id }) {
         >
           IR Value{" "}
           <select
+            className="nodrag"
             value={form.irValue}
-            onChange={(e) => handleDataChange("irValue", e.target.value)}
+            onChange={(e) => handleChange("irValue", e.target.value)}
             onPointerDown={stopEvent}
             onMouseDown={stopEvent}
             style={{
