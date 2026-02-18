@@ -8,10 +8,17 @@ import NodeBody from "../common/NodeBody";
 import StandardHandles from "../common/StandardHandles";
 
 const IRSensorNode = ({ data, selected, id }) => {
-  const [outPin, setOutPin] = useState(data?.outPin || "");
-  const [irValue, setIrValue] = useState(data?.irValue || "");
+  const [form, setForm] = useState({
+    outPin: data?.outPin || "",
+    irValue: data?.irValue || "",
+  });
 
   const handleChange = (key, val) => {
+    setForm((prev) => ({ ...prev, [key]: val }));
+    if (data.onChange) data.onChange(key, val);
+  };
+
+  const handleBlur = (key, val) => {
     if (data.onChange) data.onChange(key, val);
   };
 
@@ -37,9 +44,8 @@ const IRSensorNode = ({ data, selected, id }) => {
         <div>
           OUT Pin{" "}
           <PinSelect
-            value={outPin}
+            value={form.outPin}
             onChange={(val) => {
-              setOutPin(val);
               handleChange("outPin", val);
             }}
             availablePins={data.availablePins}
@@ -63,9 +69,9 @@ const IRSensorNode = ({ data, selected, id }) => {
         <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
           IR Value{" "}
           <select
-            value={irValue}
+            className="nodrag"
+            value={form.irValue}
             onChange={(e) => {
-              setIrValue(e.target.value);
               handleChange("irValue", e.target.value);
             }}
             onPointerDown={stopEvent}
