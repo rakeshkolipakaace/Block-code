@@ -13,7 +13,11 @@ const PushButtonNode = ({ data, selected, id }) => {
   const [value, setValue] = useState(data.value || "LOW");
 
   const handleChange = (key, val) => {
-    // if (data.onChange) data.onChange(key, val);
+    if (data.onChange) data.onChange(key, val);
+  };
+
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
   };
 
   const primaryColor = "#10b981";
@@ -69,6 +73,7 @@ const PushButtonNode = ({ data, selected, id }) => {
         >
           Value{" "}
           <select
+            className="nodrag"
             value={value}
             onChange={(e) => {
               setValue(e.target.value);
