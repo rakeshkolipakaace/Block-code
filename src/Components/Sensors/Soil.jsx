@@ -10,12 +10,21 @@ import StandardHandles from "../common/StandardHandles";
 const SoilMoistureSensorNode = ({ data, selected, id }) => {
   const [form, setForm] = useState({
     analogPin: data?.analogPin || "",
-    moisture: data?.moisture || "",
+    moisture: data?.moisture || "soil_moisture",
   });
 
   const handleChange = (key, val) => {
     setForm((prev) => ({ ...prev, [key]: val }));
-    // if (data.onChange) data.onChange(id, { ...form, [key]: val });
+    // if (data.onChange) data.onChange(key, val);
+  };
+
+  const handleImmediateChange = (key, val) => {
+    setForm((prev) => ({ ...prev, [key]: val }));
+    if (data.onChange) data.onChange(key, val);
+  };
+
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
   };
 
   const primaryColor = "#f97316";
@@ -40,7 +49,7 @@ const SoilMoistureSensorNode = ({ data, selected, id }) => {
           Analog Pin{" "}
           <PinSelect
             value={form.analogPin}
-            onChange={(val) => handleChange("analogPin", val)}
+            onChange={(val) => handleImmediateChange("analogPin", val)}
             availablePins={data.availablePins}
             pwmPins={data.pwmPins}
             selectStyle={{
@@ -68,10 +77,12 @@ const SoilMoistureSensorNode = ({ data, selected, id }) => {
         >
           Moisture{" "}
           <input
+            className="nodrag"
             type="text"
             value={form.moisture}
             placeholder="Moisture"
             onChange={(e) => handleChange("moisture", e.target.value)}
+            onBlur={(e) => handleBlur("moisture", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
@@ -86,7 +97,7 @@ const SoilMoistureSensorNode = ({ data, selected, id }) => {
               outline: "none",
             }}
           />
-         
+
         </div>
       </NodeBody>
 
