@@ -11,8 +11,13 @@ const PrintNode = ({ data, selected, id }) => {
   const [text, setText] = useState(data.text || "'Hello world'");
 
   const handleChange = (key, val) => {
-    // if (data.onChange) data.onChange(key, val);
+    if (data.onChange) data.onChange(key, val);
   };
+
+  const handleBlur = (key, value) => {
+    if (data.onChange) data.onChange(key, value);
+  };
+
 
   const primaryColor = "#3b82f6";
   const borderColor = "#1e1e2e";
@@ -41,11 +46,12 @@ const PrintNode = ({ data, selected, id }) => {
             Text
           </label>
           <input
+            className="nodrag"
             value={text}
             onChange={(e) => {
               setText(e.target.value);
-              handleChange("text", e.target.value);
             }}
+            onBlur={(e) => handleBlur("text", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
