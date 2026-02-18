@@ -16,7 +16,11 @@ const RGBLEDBlock = ({ data, selected, id }) => {
   const [brightness, setBrightness] = useState(data.brightness || "MEDIUM");
 
   const handleChange = (key, val) => {
-    // if (data.onChange) data.onChange(key, val);
+    if (data.onChange) data.onChange(key, val);
+  };
+
+  const handleBlur = (key, val) => {
+    if (data.onChange) data.onChange(key, val);
   };
 
   const primaryColor = "#3b82f6";
@@ -113,13 +117,14 @@ const RGBLEDBlock = ({ data, selected, id }) => {
         <div>
           Color{" "}
           <input
+            className="nodrag"
             type="text"
             value={color}
             placeholder="e.g. red or #FF0000"
             onChange={(e) => {
               setColor(e.target.value);
-              handleChange("color", e.target.value);
             }}
+            onBlur={(e) => handleBlur("color", e.target.value)}
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
             style={{
@@ -139,6 +144,7 @@ const RGBLEDBlock = ({ data, selected, id }) => {
         <div>
           Brightness{" "}
           <select
+            className="nodrag"
             value={brightness}
             onChange={(e) => {
               setBrightness(e.target.value);
