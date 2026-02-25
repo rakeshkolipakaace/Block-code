@@ -63,7 +63,9 @@ export const generateCode = (blocks, edges) => {
       case "variable":
         addLine(`${indent}int ${data.variable} = ${data.value};`);
         break;
-      default:
+      case "print":
+        addLine(`${indent}Serial.print("${data.text}");`);
+        break;
         break;
     }
 
