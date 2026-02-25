@@ -136,6 +136,21 @@ export const generateCode = (blocks, edges) => {
         );
         break;
       }
+      case "servoMotor":
+        usedHeaders.add("#include <Servo.h>");
+        const servoPin = data.servoPin.replace(/^[DA]/, "");
+        const servoName = `servo_${servoPin}`;
+        globals.add(`Servo ${servoName};`);
+        setupLines.add(`${servoName}.attach(${servoPin});`);
+
+        const angle = parseInt(data.angle);
+        if (angle < 0 || angle > 180) {
+          addLine(`#error "Servo angle (${angle}) out of range (0-180)"`);
+        }
+        addLine(
+          `${indent}${servoName}.write(${data.angle});`,
+        );
+        break;
       default:
         break;
     }
