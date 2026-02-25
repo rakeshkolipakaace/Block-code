@@ -227,6 +227,15 @@ export const generateCode = (blocks, edges) => {
           `${indent}int distance = ${sonarName}.ping_cm();`,
         );
         break;
+      case "pushButton": {
+        const pin = data.pin.replace(/^[DA]/, "");
+        setupLines.add(`pinMode(${pin}, INPUT);`);
+        const buttonExpected = mapConstant(data.value);
+        addLine(
+          `${indent}int button_state = digitalRead(${pin}); // Expected: ${buttonExpected}`,
+        );
+        break;
+      }
       default:
         break;
     }
