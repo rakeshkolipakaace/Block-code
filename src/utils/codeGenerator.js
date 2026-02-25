@@ -91,6 +91,13 @@ export const generateCode = (blocks, edges) => {
         );
         break;
       }
+      case "gpioPinRead":
+        const pin_read = data.pin.replace(/^[DA]/, "");
+        setupLines.add(`pinMode(${pin_read}, INPUT);`);
+        addLine(
+          `${indent}int ${data.store} = digitalRead(${pin_read});`,
+        );
+        break;
       default:
         break;
     }
