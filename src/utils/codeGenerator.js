@@ -119,6 +119,23 @@ export const generateCode = (blocks, edges) => {
         );
         break;
       }
+      case "pwmLed": {
+        const pin = data.pin.replace(/^[DA]/, "");
+        let duty = 0;
+        if (data.value === "HIGH") duty = 255;
+        else if (data.value === "LOW") duty = 0;
+        else {
+          duty = parseInt(data.value);
+          if (duty < 0 || duty > 255) {
+            addLine(`#error "LED brightness (${duty}) out of range (0-255)"`);
+          }
+        }
+        setupLines.add(`pinMode(${pin}, OUTPUT);`);
+        addLine(
+          `${indent}analogWrite(${pin}, ${duty});`,
+        );
+        break;
+      }
       default:
         break;
     }
