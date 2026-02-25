@@ -332,6 +332,38 @@ export const generateCode = (blocks, edges) => {
         });
         addLine(`${indent}}`);
         break;
+      case "dht11": {
+        usedHeaders.add("#include <DHT.h>");
+        const pin = data.dataPin.replace(/^[DA]/, "");
+        const dhtName = `dht_${pin}`;
+        const dhtType = "DHT11";
+        globals.add(`DHT ${dhtName}(${pin}, ${dhtType});`);
+        setupLines.add(`${dhtName}.begin();`);
+
+        addLine(`${indent}float temp = ${dhtName}.readTemperature();`);
+        addLine(`${indent}float hum = ${dhtName}.readHumidity();`);
+        break;
+      }
+      case "rgbLed": {
+        const rPin = data.redPin.replace(/^[DA]/, "");
+        const gPin = data.greenPin.replace(/^[DA]/, "");
+        const bPin = data.bluePin.replace(/^[DA]/, "");
+        setupLines.add(`pinMode(${rPin}, OUTPUT);`);
+        setupLines.add(`pinMode(${gPin}, OUTPUT);`);
+        setupLines.add(`pinMode(${bPin}, OUTPUT);`);
+
+        addLine(`${indent}// RGB Color: ${data.color}`);
+        // Parsing hex color (e.g., #FF0000)
+        if (data.color && data.color.startsWith("#")) {
+          const r = parseInt(data.color.slice(1, 3), 16);
+          const g = parseInt(data.color.slice(3, 5), 16);
+          const b = parseInt(data.color.slice(5, 7), 16);
+          addLine(`${indent}analogWrite(${rPin}, ${r});`);
+          addLine(`${indent}analogWrite(${gPin}, ${g});`);
+          addLine(`${indent}analogWrite(${bPin}, ${b});`);
+        }
+        break;
+      }
       default:
         break;
     }
