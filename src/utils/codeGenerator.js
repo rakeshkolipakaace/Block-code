@@ -60,6 +60,9 @@ export const generateCode = (blocks, edges) => {
     };
 
     switch (block.type) {
+      case "variable":
+        addLine(`${indent}int ${data.variable} = ${data.value};`);
+        break;
       default:
         break;
     }
