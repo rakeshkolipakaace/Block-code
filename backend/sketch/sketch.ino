@@ -1,18 +1,21 @@
 #include <Arduino.h>
-#include <Servo.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
-Servo servo_9;
+Adafruit_SSD1306 oled_47_48(128, 64, &Wire, -1);
 
 void setup() {
     Serial.begin(9600);
-    pinMode(5, INPUT);
-    servo_9.attach(9);
+    Wire.begin();
+    oled_47_48.begin(0x3c, false);
+    oled_47_48.clearDisplay();
+    oled_47_48.display();
 }
+
 void loop() {
-int ir_val = digitalRead(5); // Expected: HIGH
-if (ir_val == HIGH) {
-    servo_9.write(90);
-} else {
-    servo_9.write(0);
-}
+oled_47_48.clearDisplay();
+oled_47_48.setCursor(0, 0);
+oled_47_48.println("Hello world");
+oled_47_48.display();
 }
