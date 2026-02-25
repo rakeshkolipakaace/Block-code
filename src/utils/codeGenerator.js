@@ -69,6 +69,15 @@ export const generateCode = (blocks, edges) => {
       case "sleep":
         addLine(`${indent}delay(${(data.seconds) * 1000});`);
         break;
+      case "buzzer": {
+        const buzzerPin = data.pin.replace(/^[DA]/, "");
+        setupLines.add(`pinMode(${buzzerPin}, OUTPUT);`);
+        const buzzerOutput = mapConstant(data.output);
+        addLine(
+          `${indent}digitalWrite(${buzzerPin}, ${buzzerOutput});`,
+        );
+        break;
+      }
       default:
         break;
     }
