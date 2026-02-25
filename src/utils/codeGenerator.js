@@ -66,6 +66,10 @@ export const generateCode = (blocks, edges) => {
       case "print":
         addLine(`${indent}Serial.print("${data.text}");`);
         break;
+      case "sleep":
+        addLine(`${indent}delay(${(data.seconds) * 1000});`);
+        break;
+      default:
         break;
     }
 
