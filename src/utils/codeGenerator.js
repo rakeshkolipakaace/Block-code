@@ -105,6 +105,20 @@ export const generateCode = (blocks, edges) => {
         );
         break;
       }
+      case "pwm":
+      case "gpioPwm": {
+        const pin = data.pin.replace(/^[DA]/, "");
+        const frequency = data.frequency;
+        const duty = parseInt(data.duty);
+        if (duty < 0 || duty > 255) {
+          addLine(`#error "PWM duty cycle (${duty}) out of range (0-255)"`);
+        }
+        setupLines.add(`pinMode(${pin}, OUTPUT);`);
+        addLine(
+          `${indent}analogWrite(${pin}, ${data.duty}); // Frequency: ${frequency}Hz`,
+        );
+        break;
+      }
       default:
         break;
     }
