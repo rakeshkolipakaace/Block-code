@@ -98,6 +98,13 @@ export const generateCode = (blocks, edges) => {
           `${indent}int ${data.store} = digitalRead(${pin_read});`,
         );
         break;
+      case "adc": {
+        const pin = data.pin.replace(/^[DA]/, "");
+        addLine(
+          `${indent}int ${data.store} = analogRead(${pin});`,
+        );
+        break;
+      }
       default:
         break;
     }
