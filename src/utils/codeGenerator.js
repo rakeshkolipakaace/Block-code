@@ -194,6 +194,28 @@ export const generateCode = (blocks, edges) => {
         addLine(`${indent}${oledName}.println("${displayText}");`);
         addLine(`${indent}${oledName}.display();`);
         break;
+      case "lcd16x2": {
+        usedHeaders.add("#include <Wire.h>");
+        usedHeaders.add("#include <LiquidCrystal_I2C.h>");
+        const addr = data.address;
+        const lcdName = `lcd_${addr.replace(".", "_")}`;
+        globals.add(`LiquidCrystal_I2C ${lcdName}(${addr}, 16, 2);`);
+        setupLines.add(`${lcdName}.init();`);
+
+        if (data.backlight === "HIGH") {
+          setupLines.add(`${lcdName}.backlight();`);
+        } else {
+          setupLines.add(`${lcdName}.noBacklight();`);
+        }
+
+        addLine(
+          `${indent}${lcdName}.setCursor(${data.column}, ${data.row});`,
+        );
+        addLine(
+          `${indent}${lcdName}.print("${data.printText}");`,
+        );
+        break;
+      }
       default:
         break;
     }
