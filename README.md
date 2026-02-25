@@ -46,13 +46,31 @@ Follow these steps to set up the project locally.
 
 ### Running the Project
 
-Start the development server:
+#### Option 1: Single Command (Recommended)
+Start both frontend and backend simultaneously:
 
 ```bash
-npm run dev
+npm run start      # Runs both frontend + backend
+# or
+npm run start:all  # Alternative name, same functionality
 ```
 
-Open your browser and navigate to `http://localhost:5173` (or the port shown in your terminal) to view the application.
+This will start:
+- **Frontend**: http://localhost:5174 (or next available port)
+- **Backend**: http://localhost:5000 (compiler server)
+
+#### Option 2: Manual Setup
+Start servers separately in different terminals:
+
+```bash
+# Terminal 1 - Frontend
+npm run dev
+
+# Terminal 2 - Backend  
+cd backend && npm start
+```
+
+Open your browser and navigate to the frontend URL (shown in terminal) to view the application.
 
 ## Building for Production
 
