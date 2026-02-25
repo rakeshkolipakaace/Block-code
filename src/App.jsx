@@ -9,6 +9,7 @@ const App = () => {
   const [blocks, setBlocks] = useState([]);
   const [selectedBlock, setSelectedBlock] = useState(null);
   const [edges, setEdges] = useState([]);
+  const [errorBlockId, setErrorBlockId] = useState(null);
 
   const onEdgesChange = useCallback((changes) => {
     setEdges((eds) => applyEdgeChanges(changes, eds));
@@ -85,6 +86,7 @@ const App = () => {
               onUpdateBlockData={updateBlockData}
               onSelectBlock={selectBlock}
               onDeleteBlock={deleteBlock}
+              errorBlockId={errorBlockId}
             />
           </ReactFlowProvider>
         </div>
@@ -98,7 +100,11 @@ const App = () => {
             background: "#020617",
           }}
         >
-          <Codegen blocks={blocks} edges={edges} />
+          <Codegen
+            blocks={blocks}
+            edges={edges}
+            onErrorBlock={setErrorBlockId}
+          />
         </div>
       </div>
     </>

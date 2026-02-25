@@ -159,6 +159,7 @@ const FlowComponent = ({
   onUpdateBlockData,
   onSelectBlock,
   onDeleteBlock,
+  errorBlockId,
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const reactFlowInstance = useReactFlow();
@@ -268,6 +269,8 @@ const FlowComponent = ({
           return true;
         };
 
+        const isError = errorBlockId && errorBlockId.toString() === nodeId;
+
         // Reuse existing node if nothing substantial changed
         if (existingNode) {
           const prevData = existingNode.data;
@@ -282,7 +285,8 @@ const FlowComponent = ({
             existingNode.type === type &&
             existingNode.position.x === block.position.x &&
             existingNode.position.y === block.position.y &&
-            existingNode.selected === (selectedBlock === block.id)
+            existingNode.selected === (selectedBlock === block.id) &&
+            existingNode.className === (isError ? "error-block" : "")
           ) {
             return existingNode;
           }
@@ -297,6 +301,12 @@ const FlowComponent = ({
           data: newData,
           selected: selectedBlock === block.id,
           draggable: true,
+          className: isError ? "error-block" : "",
+          style: isError ? {
+            boxShadow: "0 0 20px #ef4444",
+            border: "2px solid #ef4444",
+            borderRadius: "8px"
+          } : {}
         };
       });
 
@@ -306,7 +316,7 @@ const FlowComponent = ({
 
       return newNodes;
     });
-  }, [blocks, selectedBlock, onUpdateBlockData, onDeleteBlock]);
+  }, [blocks, selectedBlock, onUpdateBlockData, onDeleteBlock, errorBlockId]);
 
 
 
@@ -362,6 +372,7 @@ const BlockCanvas = ({
   onUpdateBlockData,
   onSelectBlock,
   onDeleteBlock,
+  errorBlockId,
 }) => {
   return (
     <div style={{ width: "100%", height: "100%" }}>
@@ -374,6 +385,7 @@ const BlockCanvas = ({
         onUpdateBlockData={onUpdateBlockData}
         onSelectBlock={onSelectBlock}
         onDeleteBlock={onDeleteBlock}
+        errorBlockId={errorBlockId}
       />
     </div>
   );

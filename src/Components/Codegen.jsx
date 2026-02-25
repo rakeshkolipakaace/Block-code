@@ -3,21 +3,22 @@ import { FaCode } from "react-icons/fa";
 import { BsFillDisplayFill } from "react-icons/bs";
 import { generateCode } from "../utils/codeGenerator";
 import { Highlight, themes } from "prism-react-renderer";
+import Compiler from "./Compiler";
 
-const Codegen = ({ blocks, edges }) => {
-  const [codeData, setCodeData] = useState({ helpers: "", main: "" });
-  const [showFull, setShowFull] = useState(false);
+const Codegen = ({ blocks, edges, onErrorBlock }) => {
+  const [codeData, setCodeData] = useState({ headers: "", globals: "", main: "", lineMap: {} });
 
   useEffect(() => {
     const generated = generateCode(blocks, edges);
-    if (typeof generated === 'string') {
-      setCodeData({ helpers: "", main: generated });
+    if (!generated || typeof generated === 'string') {
+      setCodeData({ headers: "", globals: "", main: generated || "", lineMap: {} });
     } else {
       setCodeData(generated);
     }
   }, [blocks, edges]);
 
-  const outputCode = showFull ? (codeData.helpers + "\n" + codeData.main) : codeData.main;
+  const fullCode = [codeData.headers, codeData.globals, codeData.main].filter(s => s.trim().length > 0).join("\n\n");
+  const displayCode = fullCode;
 
   return (
     <>
@@ -33,32 +34,18 @@ const Codegen = ({ blocks, edges }) => {
           <FaCode className="inline mr-2" style={{ color: "#05f29b" }} />
           <span style={{ color: "#fff" }}>Generate Code</span>
         </div>
-        <button
-          onClick={() => setShowFull(!showFull)}
-          style={{
-            background: "#333",
-            border: "none",
-            borderRadius: "4px",
-            color: "#fff",
-            fontSize: "10px",
-            padding: "4px 8px",
-            cursor: "pointer"
-          }}
-        >
-          {showFull ? "Show Logic Only" : "Show Full Code"}
-        </button>
       </div>
 
       <div style={{
         borderRadius: "8px",
         overflow: "hidden",
         border: "1px solid #333",
-        marginBottom: "8px"
+        marginBottom: "16px"
       }}>
         <Highlight
           theme={themes.vsDark}
-          code={outputCode}
-          language="python"
+          code={displayCode}
+          language="cpp"
         >
           {({ className, style, tokens, getLineProps, getTokenProps }) => (
             <pre style={{
@@ -87,6 +74,7 @@ const Codegen = ({ blocks, edges }) => {
           display: "flex",
           alignItems: "center",
           gap: "8px",
+          marginBottom: "12px"
         }}
       >
         <BsFillDisplayFill
@@ -97,6 +85,13 @@ const Codegen = ({ blocks, edges }) => {
         />
         Output
       </div>
+
+      {/* Compiler Component */}
+      <Compiler
+        code={fullCode}
+        lineMap={codeData.lineMap}
+        onErrorBlock={onErrorBlock}
+      />
     </>
   );
 };

@@ -88,7 +88,7 @@ const Sidebar = ({ onAddBlock }) => {
     } else if (subItem === "Soil Moisture") {
       onAddBlock("soilMoisture", { analogPin: "", moisture: "" });
     } else if (subItem === "Water Level Sensor") {
-      onAddBlock("waterLevel", { waterLevel: "" });
+      onAddBlock("waterLevel", { outPin: "", irValue: "" });
     } else if (subItem === "Buzzer") {
       onAddBlock("buzzer", { pin: "", output: "LOW" });
     } else if (subItem === "PWM LED") {

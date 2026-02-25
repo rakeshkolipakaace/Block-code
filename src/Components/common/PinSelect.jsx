@@ -23,8 +23,15 @@ const pins = [
   "A5",
 ];
 
-const PinSelect = ({ value, onChange, availablePins, selectStyle, ...props }) => {
-  const pinsToUse = availablePins && availablePins.length > 0 ? availablePins : pins;
+const PinSelect = ({
+  value,
+  onChange,
+  availablePins,
+  selectStyle,
+  ...props
+}) => {
+  // const pinsToUse = availablePins && availablePins.length > 0 ? availablePins : pins;
+  const pinsToUse = pins;
 
   return (
     <select
@@ -33,17 +40,21 @@ const PinSelect = ({ value, onChange, availablePins, selectStyle, ...props }) =>
       onChange={(e) => onChange && onChange(e.target.value)}
       onPointerDown={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
-      style={selectStyle || {
-        background: "#111",
-        color: "#fff",
-        border: "1px solid #333",
-        borderRadius: 6,
-        height: 28,
-        padding: "0 6px",
-      }}
+      style={
+        selectStyle || {
+          background: "#111",
+          color: "#fff",
+          border: "1px solid #333",
+          borderRadius: 6,
+          height: 28,
+          padding: "0 6px",
+        }
+      }
       {...props}
     >
-      <option value="" disabled>Select pin</option>
+      <option value="" disabled>
+        Select pin
+      </option>
       {pinsToUse.map((pin) => (
         <option key={pin} value={pin}>
           {pin}
