@@ -1,3 +1,7 @@
+/**
+ * Codegen Component
+ * Generates and displays standard Arduino C++ code from block logic.
+ */
 import React, { useState, useEffect } from "react";
 import { FaCode } from "react-icons/fa";
 import { BsFillDisplayFill } from "react-icons/bs";
