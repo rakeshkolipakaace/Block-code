@@ -236,6 +236,15 @@ export const generateCode = (blocks, edges) => {
         );
         break;
       }
+      case "ir": {
+        const pin = data.outPin.replace(/^[DA]/, "");
+        setupLines.add(`pinMode(${pin}, INPUT);`);
+        const irExpected = mapConstant(data.irValue);
+        addLine(
+          `${indent}int ir_val = digitalRead(${pin}); // Expected: ${irExpected}`,
+        );
+        break;
+      }
       default:
         break;
     }
