@@ -78,6 +78,11 @@ export const generateCode = (blocks, edges) => {
         );
         break;
       }
+      case "gpioPin": {
+        const pin_gpio = data.pin.replace(/^[DA]/, "");
+        setupLines.add(`pinMode(${pin_gpio}, ${mapConstant(data.mode)});`);
+        break;
+      }
       default:
         break;
     }
