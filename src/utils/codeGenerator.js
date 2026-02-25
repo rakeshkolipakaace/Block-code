@@ -268,6 +268,70 @@ export const generateCode = (blocks, edges) => {
         );
         break;
       }
+      case "ifCond":
+      case "ifElse": {
+        const left = mapConstant(data.left);
+        const right = mapConstant(data.right);
+        addLine(`${indent}if (${left} ${data.operator} ${right}) {`);
+
+        if (trueFlow.length > 0) {
+          trueFlow.forEach((conn) => {
+            items = items.concat(processBlock(conn.target, indentLevel + 1));
+          });
+        }
+        addLine(`${indent}}`);
+
+        if (block.type === "ifElse") {
+          addLine(`${indent}else {`);
+          if (falseFlow.length > 0) {
+            falseFlow.forEach((conn) => {
+              items = items.concat(processBlock(conn.target, indentLevel + 1));
+            });
+          }
+          addLine(`${indent}}`);
+        }
+        break;
+      }
+
+      case "forever":
+        addLine(`${indent}while (true) {`);
+        normalFlow.forEach((conn) => {
+          items = items.concat(processBlock(conn.target, indentLevel + 1));
+        });
+        addLine(`${indent}}`);
+        return items;
+
+      case "repeat":
+        addLine(`${indent}for (int i = 0; i < ${data.times}; i++) {`);
+        normalFlow.forEach((conn) => {
+          items = items.concat(processBlock(conn.target, indentLevel + 1));
+        });
+        addLine(`${indent}}`);
+        break;
+
+      case "break":
+        addLine(`${indent}break;`);
+        break;
+
+      case "whileLoop": {
+        const condition = mapConstant(data.condition);
+        addLine(`${indent}while (${condition}) {`);
+        normalFlow.forEach((conn) => {
+          items = items.concat(processBlock(conn.target, indentLevel + 1));
+        });
+        addLine(`${indent}}`);
+        break;
+      }
+
+      case "forLoop":
+        addLine(
+          `${indent}for (int ${data.variable} = 0; ${data.variable} < ${data.limit}; ${data.variable}++) {`,
+        );
+        normalFlow.forEach((conn) => {
+          items = items.concat(processBlock(conn.target, indentLevel + 1));
+        });
+        addLine(`${indent}}`);
+        break;
       default:
         break;
     }
