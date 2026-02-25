@@ -245,6 +245,15 @@ export const generateCode = (blocks, edges) => {
         );
         break;
       }
+      case "waterLevel": {
+        const pin = data.outPin.replace(/^[DA]/, "");
+        setupLines.add(`pinMode(${pin}, INPUT);`);
+        const waterThreshold = mapConstant(data.irValue);
+        addLine(
+          `${indent}int water_level = digitalRead(${pin}); // Threshold: ${waterThreshold}`,
+        );
+        break;
+      }
       default:
         break;
     }
