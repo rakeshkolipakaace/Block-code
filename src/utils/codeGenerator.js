@@ -151,6 +151,15 @@ export const generateCode = (blocks, edges) => {
           `${indent}${servoName}.write(${data.angle});`,
         );
         break;
+      case "relay": {
+        const relayPin = data.pin.replace(/^[DA]/, "");
+        setupLines.add(`pinMode(${relayPin}, OUTPUT);`);
+        const relayNo = mapConstant(data.no);
+        addLine(
+          `${indent}digitalWrite(${relayPin}, ${relayNo}); // NO: ${data.no}, NC: ${data.nc}`,
+        );
+        break;
+      }
       default:
         break;
     }
