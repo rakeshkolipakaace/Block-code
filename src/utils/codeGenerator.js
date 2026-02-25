@@ -83,6 +83,14 @@ export const generateCode = (blocks, edges) => {
         setupLines.add(`pinMode(${pin_gpio}, ${mapConstant(data.mode)});`);
         break;
       }
+      case "gpioPinWrite": {
+        const pin_write = data.pin.replace(/^[DA]/, "");
+        setupLines.add(`pinMode(${pin_write}, OUTPUT);`);
+        addLine(
+          `${indent}digitalWrite(${pin_write}, ${mapConstant(data.value)});`,
+        );
+        break;
+      }
       default:
         break;
     }
