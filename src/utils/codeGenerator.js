@@ -216,6 +216,17 @@ export const generateCode = (blocks, edges) => {
         );
         break;
       }
+      case "ultrasonic":
+        usedHeaders.add("#include <NewPing.h>");
+        const trig = data.triggerPin.replace(/^[DA]/, "");
+        const echo = data.echoPin.replace(/^[DA]/, "");
+        const sonarName = `sonar_${trig}_${echo}`;
+        globals.add(`NewPing ${sonarName}(${trig}, ${echo}, 200);`);
+
+        addLine(
+          `${indent}int distance = ${sonarName}.ping_cm();`,
+        );
+        break;
       default:
         break;
     }
