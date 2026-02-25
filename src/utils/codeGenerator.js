@@ -160,6 +160,40 @@ export const generateCode = (blocks, edges) => {
         );
         break;
       }
+      case "oled13":
+        usedHeaders.add("#include <Wire.h>");
+        usedHeaders.add("#include <Adafruit_GFX.h>");
+        usedHeaders.add("#include <Adafruit_SSD1306.h>");
+
+        const sckPin = data.sckPin || "22";
+        const sdaPin = data.sdaPin || "21";
+        const oledWidth = 128;
+        const oledHeight = 64;
+        const oledReset = -1;
+        const screenAddress = 0x3C;
+
+        const oledName = `oled_${sckPin}_${sdaPin}`;
+        globals.add(`Adafruit_SSD1306 ${oledName}(${oledWidth}, ${oledHeight}, &Wire, ${oledReset});`);
+
+        setupLines.add(`Wire.begin();`);
+        setupLines.add(`${oledName}.begin(0x${screenAddress.toString(16)}, false);`);
+        setupLines.add(`${oledName}.clearDisplay();`);
+
+        if (data.rotate && data.rotate !== "0") {
+          setupLines.add(`${oledName}.setRotation(2);`);
+        }
+
+        setupLines.add(`${oledName}.display();`);
+
+        const xPos = parseInt(data.left) || 0;
+        const yPos = parseInt(data.top) || 0;
+        const displayText = data.text || "Hello world";
+
+        addLine(`${indent}${oledName}.clearDisplay();`);
+        addLine(`${indent}${oledName}.setCursor(${xPos}, ${yPos});`);
+        addLine(`${indent}${oledName}.println("${displayText}");`);
+        addLine(`${indent}${oledName}.display();`);
+        break;
       default:
         break;
     }
