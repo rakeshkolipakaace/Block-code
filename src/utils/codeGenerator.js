@@ -254,6 +254,20 @@ export const generateCode = (blocks, edges) => {
         );
         break;
       }
+      case "soilMoisture": {
+        const pin = data.analogPin.replace(/^[DA]/, "");
+        addLine(
+          `${indent}int soil_moisture = analogRead(${pin}); ${data.moisture ? `// Threshold: ${data.moisture}` : ""}`,
+        );
+        break;
+      }
+      case "ldr": {
+        const pin = data.analogPin.replace(/^[DA]/, "");
+        addLine(
+          `${indent}int ldr_val = analogRead(${pin}); ${data.intensity ? `// Intensity: ${data.intensity}` : ""}`,
+        );
+        break;
+      }
       default:
         break;
     }
